@@ -1,0 +1,9 @@
+format: null
+handle: grid
+height: 250
+interlace: none
+mode: crop
+name: Grid
+position: center-center
+quality: null
+width: 250

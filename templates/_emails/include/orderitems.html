@@ -1,0 +1,34 @@
+<table class="purchase" width="100%" cellpadding="0" cellspacing="0">
+
+    <tr>
+        <td colspan="2">
+        <table class="purchase_content" width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+            <th class="purchase_heading" width="8%"><p>Qty</p></th>
+            <th class="purchase_heading" width="72%">
+                <p>Description</p>
+            </th>
+            <th class="purchase_heading" width="20%">
+                <p class="align-right">Amount</p>
+            </th>
+
+            </tr>
+    {% for item in order.lineItems %}
+    <tr>
+    <td class="purchase_item">{{ item.qty }}</td>
+    <td width="67%" class="purchase_item">{{item.sku}} - {{item.description}}</td>
+
+        <td class="align-right purchase_item" width="25%">₱{{ item.price|number_format(2, '.', ',') }}</td>
+    </tr>
+    {% endfor %}
+
+    <tr>
+        <td class="purchase_footer"></td>
+        <td width="80%" class="purchase_footer" valign="middle">
+            <p class="purchase_total purchase_total--label">Total</p>
+        </td>
+        <td width="20%" class="purchase_footer" valign="middle">
+            <p class="purchase_total">₱{{ order.totalPrice|number_format(2, '.', ',') }}</p>
+        </td>
+    </tr>
+</table>

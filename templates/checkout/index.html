@@ -1,0 +1,51 @@
+{% if currentUser %}
+  {% redirect 'checkout/addresses' %}
+{% endif %}
+
+{% extends '_layouts/checkout' %}
+
+{% block content %}
+  <div class="flex -mx-8 mt-6">
+    <div class="w-1/2 px-8 border-r border-grey-lighter">
+      <h2>Let’s grab your email to get started!</h2>
+      <form method="POST">
+        <input type="hidden" name="action" value="depotise-module/cart/update-cart-email">
+        {{ craft.depotiseModule.app.redirectInput('checkout/register-signin') }}
+        {{ csrfInput() }}
+        <input type="hidden" name="siteId" value="{{ craft.app.sites.currentSite.id }}">
+        <label for="email">Email</label>
+        <div class="row">
+          <div class="col-md-7 col-sm-12 form-group">
+            <input id="email" class="form-control" type="text"
+                   value="{{ cart.email }}"
+                   name="email"
+                   placeholder="email@site.com"/>
+
+
+            {% set emailErrors = cart.getErrors('email') %}
+            {% if emailErrors|length %}
+              <span class="text-red">{{ emailErrors|join }}</span><br>
+            {% endif %}
+          </div>
+          <div class="col-md-3 col-sm-12 form-group">
+              <input type="submit" value="Continue" class="btn btn-border"/>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="w-1/2 px-8">
+      <h2>Or</h2>
+      {% for provider in craft.depotiseSocial.getLoginProviders() %}
+        {% set redirect = siteUrl ~ 'checkout/addresses' %}
+        <div class="field">
+          <label>&nbsp;</label>
+          <a href="{{ craft.depotiseSocial.getLoginUrl(provider.handle, { redirect: redirect }) }}"
+             data-provider="{{ provider.handle }}">
+            <img width="320" alt="continue with facebook" src="/images/continue-with-facebook.png"/>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

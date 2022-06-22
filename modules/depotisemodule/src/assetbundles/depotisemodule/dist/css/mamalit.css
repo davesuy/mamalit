@@ -1,0 +1,13 @@
+#page-container ul#alerts {
+  display: none;
+}
+
+#nav li {
+  display: none;
+}
+
+#nav #nav-commerce, #nav #nav-commerce li, #nav #nav-depotise-modulemultiple-order,
+#nav #nav-categories,
+#nav #nav-depotise-modulesites, #nav #nav-entriessuggest, #nav #nav-settingssites  {
+  display: block;
+}

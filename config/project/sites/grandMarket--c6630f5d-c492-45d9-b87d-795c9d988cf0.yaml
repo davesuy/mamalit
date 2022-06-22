@@ -1,0 +1,9 @@
+baseUrl: '@web/grand-market'
+enabled: true
+handle: grandMarket
+hasUrls: true
+language: en-PH
+name: 'Grand Market'
+primary: false
+siteGroup: 24b75201-290a-4426-a670-88ee49d5d4c1
+sortOrder: 18

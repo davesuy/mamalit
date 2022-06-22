@@ -1,0 +1,57 @@
+{% extends '_layouts/main' %}
+{% block main %}
+
+
+  <h1 class="tt-title mb-5">{{ entry.title }}</h1>
+
+  <div class="tt-wrapper">
+    {{ entry.body }}
+  </div>
+  <div class="row text-center">
+    <div class="col-sm-4">
+      <h2>Buy the products you love</h2>
+      <div class="tt-image-box" style="min-height: 330px">
+        <img width="250" src="images/how-it-works/cart-image.jpg" alt="cart image" />
+      </div>
+      <div class="tt-description" style="margin-bottom: 50px">
+        <h4>
+          From groceries and home
+          essentials to pet products
+          and more, browse 1,000s of
+          products from your favorite
+          local stores.
+        </h4>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <h2>Get same day delivery</h2>
+      <div class="tt-image-box" style="min-height: 330px; margin-top: 47px">
+        <img width="250" src="images/how-it-works/same-day.jpg" alt="same day delivery" />
+      </div>
+      <div class="tt-description" style="margin-bottom: 50px">
+        <h4>
+          No need to wait for the next
+          day to get what you need. Our
+          shopper will bring it to you
+          instantly.
+        </h4>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <h2>Save time and money</h2>
+      <div class="tt-image-box" style="min-height: 330px; margin-top: 49px">
+        <img width="250" src="images/how-it-works/save-time-money.jpg" alt="save money" />
+      </div>
+      <div class="tt-description" style="margin-bottom: 50px">
+        <h4>
+          Save your gas money and
+          have more time for the things
+          that spark joy.
+        </h4>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

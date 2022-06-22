@@ -1,0 +1,100 @@
+{% extends '_layouts/main' %}
+{% block main %}
+  {% set bundleSlug = craft.request.getSegment(-1) %}
+  <fixed-header :threshold="100">
+    <div class="row search-section">
+      <div class="col-sm-12">
+        <div class="tt-collapse-content">
+            <div class="form-group mx-auto width-90">
+              <div class="row">
+                <div class="col-9">
+                  <auto-suggest  action-url="{{ actionUrl('depotise-module/product/get-auto-suggest') }}" v-model="bundleSuggest" @selected="searchBundleTitle"></auto-suggest>
+                </div>
+                <div class="col-3">
+                  <button :disabled="bundleSuggest === null || bundleSuggest.trim() === ''" type="submit" @click.prevent="searchBundleTitle"
+                          class="btn px-3">Search
+                  </button>
+                </div>
+              </div>
+            </div>
+
+        </div>
+
+        {% if bundleSlug == 'bundles' %}
+        <div class="text-center">
+          <h1 class="tt-collapse-title">Bundles</h1>
+        </div>
+        {% else %}
+          {% include "_includes/current-bundles" %}
+        {% endif %}
+        {% if craft.app.sites.currentSite.id is not same as(craft.app.sites.primarySite.id) %}
+          <h4 class="text-center">You shopping in {{ craft.app.sites.currentSite.name }}</h4>
+          <h4 class="text-center"><i class="icon-e-30"></i> <a href="/products">Go Back to All Stores</a></h4>
+        {% endif %}
+      </div>
+    </div>
+  </fixed-header>
+
+
+
+    {% set currentCategory = craft.categories.where({'slug': bundleSlug}).one() %}
+
+    <div class="row">
+      <div class="col-md-12 col-lg-12 col-xl-12">
+        <div class="content-indent container-fluid-custom-mobile-padding-02">
+          {% if bundleSlug == 'bundles' %}
+
+            {{ craft.superFilter.setup('bundleCategory', { siteId: 1, attributes: ['title']}) }}
+            <div class="tt-collapse-content">
+              {{ craft.superFilter.displaySearchFields() }}
+            </div>
+          {% else %}
+            {% set currentObj = currentCategory ? {
+              filter: {
+                productBundles: [currentCategory.id]
+              }
+            } : {} %}
+            {{ craft.superFilter.setup('bundles', currentObj|merge({attributes: [
+              'title', 'siteId', 'defaultVariantId', 'slug',
+              'defaultPrice', 'defaultSku']})) }}
+
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="tt-collapse-content">
+
+                    <button @click.prevent="addAllToCart" class="btn px-3">Add All To CART
+                    </button>
+                </div>
+              </div>
+              <div class="col-sm-6">
+
+              </div>
+            </div>
+          {% endif %}
+
+
+          {{ craft.superFilter.items() }}
+
+          {{ craft.superFilter.getPaginateLinks() }}
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}
+{% css %}
+  .vue-fixed-header--isFixed.search-section {
+    padding-top: 10px;
+    position: fixed;
+    z-index: 20;
+    width: 100%;
+    background: #fff;
+    top:0
+  }
+
+  @media(max-width:767px) {
+  .vue-fixed-header--isFixed.search-section {
+    top: 50px;
+    }
+  }
+{% endcss %}

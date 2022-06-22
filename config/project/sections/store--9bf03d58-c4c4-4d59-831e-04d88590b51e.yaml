@@ -1,0 +1,23 @@
+enableVersioning: true
+handle: store
+name: Store
+previewTargets:
+  -
+    __assoc__:
+      -
+        - label
+        - 'Primary entry page'
+      -
+        - urlFormat
+        - '{url}'
+      -
+        - refresh
+        - '1'
+propagationMethod: all
+siteSettings:
+  97afb406-be52-4152-8b2e-3322f7197477:
+    enabledByDefault: true
+    hasUrls: true
+    template: store
+    uriFormat: 'store/{slug}'
+type: channel

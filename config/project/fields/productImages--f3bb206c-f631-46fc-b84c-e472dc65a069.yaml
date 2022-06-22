@@ -1,0 +1,30 @@
+contentColumnType: string
+fieldGroup: bdf930d1-a02d-4fe0-a691-afde504fc428
+handle: productImages
+instructions: ''
+name: 'Product Images'
+searchable: true
+settings:
+  allowSelfRelations: false
+  allowedKinds:
+    - image
+  defaultUploadLocationSource: 'volume:ec975d9e-0a9e-4068-9eaf-bcf9cd0d52dc'
+  defaultUploadLocationSubpath: '{author.username}'
+  limit: ''
+  localizeRelations: false
+  restrictFiles: ''
+  selectionLabel: ''
+  showSiteMenu: true
+  showUnpermittedFiles: false
+  showUnpermittedVolumes: false
+  singleUploadLocationSource: 'volume:ec975d9e-0a9e-4068-9eaf-bcf9cd0d52dc'
+  singleUploadLocationSubpath: 'product-images/{site.handle}'
+  source: null
+  sources: '*'
+  targetSiteId: null
+  useSingleFolder: true
+  validateRelatedElements: false
+  viewMode: list
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Assets

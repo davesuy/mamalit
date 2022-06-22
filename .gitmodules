@@ -1,0 +1,9 @@
+[submodule "local/craftcms/commerce"]
+	path = local/craftcms/commerce
+	url = https://github.com/pdaleramirez/commerce
+[submodule "local/craftcms/cms"]
+	path = local/craftcms/cms
+	url = https://github.com/pdaleramirez/cms
+[submodule "local/pdaleramirez/super-filter"]
+	path = local/pdaleramirez/super-filter
+	url = https://github.com/pdaleramirez/super-filter

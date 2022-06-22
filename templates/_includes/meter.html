@@ -1,0 +1,60 @@
+{% set steps = [
+    {
+        label: "Email",
+        url: 'checkout',
+        icon: 'icon-g-87'
+    },
+    {
+        label: "Account",
+        url: 'checkout/register-signin',
+        icon: 'icon-f-94'
+    },
+    {
+        label: "Address",
+        url: 'checkout/addresses',
+        icon: 'icon-g-35'
+    },
+    {
+        label: "Delivery",
+        url: 'checkout/shipping',
+        icon: 'icon-f-48'
+    },
+    {
+        label: "Payment",
+        url: 'checkout/payment',
+        icon: 'icon-e-47'
+    }
+] %}
+
+{% if width is not defined %}
+    {% set width = 0 %}
+{% endif %}
+
+<div class="steps">
+
+    <ul id="progressbar">
+        {% for key, step in steps %}
+
+            {% set class = '' %}
+            {% if craft.app.request.pathInfo == step.url %}
+                {% set width = ((key + 1) * 100 / steps|length) - 20 %}
+                {% set class = "active" %}
+                {% set currentStep = key %}
+            {% endif %}
+
+            {% if currentStep is not defined %}
+                {% set class = "done" %}
+            {% endif %}
+
+            <li class="{{ class }}">
+              <div class="step-icon">
+                <a href="{{ url( step.url ) }}"><i class="{{ step.icon }}"></i><br />{{ step.label }}</a>
+              </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="meter">
+        <span style="width: {{ width }}%"></span>
+    </div>
+</div>

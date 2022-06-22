@@ -1,0 +1,18 @@
+{% set categorySlug = craft.request.getSegment(-1) %}
+
+{% js at head %}
+
+window.csrfTokenName = "{{ craft.app.config.general.csrfTokenName|e('js') }}";
+    window.csrfTokenValue = "{{ craft.app.request.csrfToken|e('js') }}";
+    window.superFilterHandle = "{{ handle }}";
+    window.superFilterParams = '{{ params|json_encode()|raw }}';
+    window.superFilterItemAttributes = '{{ itemAttributes|json_encode()|raw }}';
+    window.superFilterCurrentPage = '{{ craft.app.request.getPageNum() }}';
+
+    let actionUrl = '{{ actionUrl('depotise-module/product/get-categories') }}';
+    let categorySlug = '{{ categorySlug }}';
+{% endjs %}
+
+{% js %}
+
+{% endjs %}

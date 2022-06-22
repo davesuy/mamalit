@@ -1,0 +1,8 @@
+color: orange
+default: true
+description: ''
+emails:
+  b996e6bf-b1fe-4ffb-a5e3-c0620f946283: b996e6bf-b1fe-4ffb-a5e3-c0620f946283
+handle: processing
+name: Processing
+sortOrder: 99

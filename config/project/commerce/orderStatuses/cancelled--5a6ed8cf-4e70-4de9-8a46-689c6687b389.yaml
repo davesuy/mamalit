@@ -1,0 +1,6 @@
+color: red
+default: false
+description: ''
+handle: cancelled
+name: Cancelled
+sortOrder: 99

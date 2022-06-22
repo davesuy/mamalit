@@ -1,0 +1,45 @@
+{% macro recursiveCategory(category, value, object) %}
+  {% import _self as self %}
+  <li>
+    {% set selected = false %}
+
+    {%  if value is iterable %}
+      {% if category.id in value %}
+        {% set selected = true %}
+      {% endif %}
+    {% elseif value == category.id   %}
+      {% set selected = true %}
+    {% endif %}
+
+    <input
+      v-model="config.params.fields.{{ object.handle }}"
+      type="checkbox" {{ selected ? 'checked' : '' }}
+      name="{{ craft.superFilter.settings.prefixParam }}[{{ object.handle }}][]"
+      value="{{ category.id }}" /> <a href="/{{ category.uri }}">{{ category.title }}</a>
+
+    {% if category.children|length and category.level != 1 %}
+      <ul>
+        {% for child in category.children %}
+          {{ self.recursiveCategory(child, value, object) }}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </li>
+{% endmacro %}
+
+{% from _self import recursiveCategory %}
+
+{% set categorySlug = craft.request.getSegment(-1) %}
+
+{% set currentCategory = craft.categories.where({'slug': categorySlug}).one() %}
+{% if currentCategory is not null %}
+  {% set categories = currentCategory.children %}
+{% endif %}
+
+{% if categories %}
+  <ul>
+    {% for category in categories %}
+      {{ recursiveCategory(category, value, object) }}
+    {% endfor %}
+  </ul>
+{% endif %}

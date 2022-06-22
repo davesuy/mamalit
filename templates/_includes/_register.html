@@ -1,0 +1,60 @@
+<div class="tt-item">
+  <h2 class="tt-title">NEW CUSTOMER</h2>
+  <p>
+    By creating an account with our store, you will be able to move through the checkout process faster, store multiple shipping addresses, view and track your orders in your account and more.
+  </p>
+  <div class="form-group form-default form-top">
+    <form method="post" accept-charset="UTF-8">
+      {{ csrfInput() }}
+      <input type="hidden" name="action" value="users/save-user">
+      {{ redirectInput(redirect) }}
+
+      {% macro errorList(errors) %}
+        {% if errors %}
+
+          {% for error in errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+
+        {% endif %}
+      {% endmacro %}
+
+      {% from _self import errorList %}
+
+      <div class="form-group">
+        <label for="first-name">First Name</label>
+        <input class="form-control" required type="text" id="first-name" name="firstName"
+          {%- if user is defined %} value="{{ user.firstName }}"{% endif -%}>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input class="form-control" id="email" type="text" name="email"
+          {%- if user is defined %} value="{{ user.email }}"{% endif %}
+          {%- if user is not defined and cart.email %} value="{{ cart.email }}"{% endif %}>
+
+        {% if user is defined %}
+          {{ errorList(user.getErrors('email')) }}
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="savePassword">Password</label>
+        <input class="form-control" id="savePassword" type="password" name="password">
+
+        {% if user is defined %}
+          {{ errorList(user.getErrors('password')) }}
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input class="form-control" id="confirmPassword" type="password" name="confirmPassword">
+      </div>
+      {% include ['_recaptcha/frontend'] %}
+      <div class="form-group">
+        <input type="submit" value="Register" class="btn btn-border"/>
+      </div>
+    </form>
+  </div>
+</div>

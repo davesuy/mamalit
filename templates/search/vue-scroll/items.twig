@@ -1,0 +1,23 @@
+<div class="row" v-if="items">
+        <div class="col-sm-12 col-md-6 my-3" v-for="item in items">
+            <div class="row">
+                <div class="col-md-12 col-xl-5 text-right">
+
+                </div>
+                <div class="col-md-12 col-xl-7">
+                    <h2 class="my-0">${ item.title }</h2>
+                  <h2 class="my-0">${ item.dateCreated | moment("dddd, MMMM Do YYYY")  }</h2>
+                    <dl>
+                      <dt><strong class="mt-0">Genre:</strong>
+                        <template v-if="item.superFilterGenre.length" v-for="(element, index) in item.superFilterGenre">
+                          <span v-if="index != 0">, </span><span>${ element.title }</span>
+                        </template>
+                      </dt>
+                      <dt v-if="item.superFilterShowTypes"><strong>Type:</strong>
+                        ${ item.superFilterShowTypes.label }
+                      </dt>
+                    </dl>
+                </div>
+            </div>
+        </div>
+</div>

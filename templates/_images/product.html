@@ -1,0 +1,13 @@
+{% for variant in product.variants %}
+
+  {% set relatedAssets = variant.productImages.all() %}
+
+  {% if relatedAssets|length %}
+    <ul>
+      {% for rel in relatedAssets %}
+        <li><img src="{{ rel.getUrl() }}" alt="{{ rel.title }}"></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+  {% endif %}
+{% endfor %}

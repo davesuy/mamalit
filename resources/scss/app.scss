@@ -1,0 +1,201 @@
+@import "~bootstrap/scss/bootstrap";
+@import "style.scss";
+@import "~bootstrap-vue/src/components/modal/_modal";
+
+
+.disabled {
+  cursor: not-allowed;
+  color: gray
+}
+#tt-header .category-desktop {
+  top: 35px;
+  display: block;
+  margin-left: 135px;
+}
+#tt-header .account-dropdown, #wrapper .mm-fullscreen-bg {
+  display: block;
+}
+
+.tt-desktop-header {
+  z-index: 16
+}
+
+#wrapper .mm-fullscreen-bg {
+  z-index: 12;
+}
+
+#header-nav {
+  background: #fff
+}
+
+.aside.leftColumn.column-open {
+  overflow: auto;
+}
+
+#header-nav .tt-dropdown-menu.account-dropdown {
+  position: fixed;
+  z-index: 14;
+}
+
+
+.vue-fixed-header--isFixed#header-nav {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  z-index: 20
+}
+
+.autosuggest__results ul {
+  list-style-type: none;
+  border: 1px solid #ced4da;
+  position: absolute;
+  padding: .5em;
+  background: #fff;
+  z-index: 5;
+  font-weight: bold;
+  li {
+    margin-bottom: .5em;
+  }
+  li:hover {
+    cursor: pointer
+  }
+}
+
+
+#progressbar {
+  margin-bottom: 30px;
+  overflow: hidden;
+  color: lightgrey
+}
+
+#progressbar .active {
+  color: #000000
+}
+
+#progressbar li {
+  list-style-type: none;
+  font-size: 12px;
+  width: 20%;
+  float: left;
+  position: relative;
+  text-align: center;
+
+  .step-icon {
+    margin-top: -40px
+  }
+}
+
+#progressbar {
+  text-align: center;
+  padding: 0;
+  li i {
+    font-size: 2em;
+
+    top: 9px;
+    color: #fff;
+  }
+}
+
+#progressbar li:before {
+  width: 40px;
+  height: 40px;
+  line-height: 45px;
+  display: block;
+  font-size: 18px;
+  color: #ffffff;
+  background: lightgray;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+  padding: 2px;
+  content: ''
+}
+
+#progressbar li:after {
+  content: '';
+  width: 100%;
+  height: 2px;
+  background: lightgray;
+  position: absolute;
+  left: 0;
+  top: 25px;
+  z-index: 1
+}
+
+#progressbar li.active:before,
+#progressbar li.active:after {
+  background: $default_color
+}
+
+#progressbar li.done:before,
+#progressbar li.done:after {
+  background: $default_color2;
+}
+
+
+ul.address-data {
+  padding: 0;
+}
+
+ul.address-data li {
+  margin-bottom: 4px;
+}
+
+.address-select { background: #fff; border: 1px solid #eee; margin-bottom: 1em; position: relative; border-radius: 4px; }
+.address-select .radio input { margin: 0 5px 0 0; position: relative; top: -1px; }
+
+.address-select .radio { padding: 14px 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.address-select ul.address-data { display: inline; }
+.address-select ul.address-data li { display: inline; }
+.address-select ul.address-data li { display: inline; }
+.address-select ul.address-data li strong { display: none; }
+.address-select ul.address-data li span[data-key=firstName] { font-weight: bold; }
+.address-select ul.address-data li span[data-key=lastName] { font-weight: bold; }
+
+
+.address-select .actions { float: right; padding: 14px 15px; font-size: 0.9em; }
+.address-select .actions ul { margin:0; }
+.address-select .actions ul li { display: inline-block; margin: 0 0 0 1em; }
+.address-select .actions ul li a { color: #999; text-decoration: underline; }
+
+.address-select .body { padding: 14px; }
+
+.vld-icon {
+  text-align: center;
+}
+
+#variant-modal .modal-header {
+  padding: 0 1em;
+}
+.modal-close {
+  padding: 0;
+  font-size:4rem;
+}
+
+.VueCarousel-navigation {
+  .VueCarousel-navigation-prev {
+    left: 20px !important;
+  }
+  .VueCarousel-navigation-next {
+    right: 20px !important;;
+  }
+}
+
+#tt-cart-dropdown {
+  overflow: auto;
+}
+
+.error-text {
+  color: red;
+}
+
+.strike-text {
+  text-decoration: line-through;
+}
+
+
+@media(max-width:767px){
+  .item .border-bottom {
+    border: none !important;
+  }
+}

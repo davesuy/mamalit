@@ -1,0 +1,188 @@
+descriptionFormat: ''
+handle: products
+hasDimensions: false
+hasProductTitleField: true
+hasVariantTitleField: true
+hasVariants: true
+name: Products
+productFieldLayouts:
+  19672230-1407-48f9-adba-86dccce354c0:
+    tabs:
+      -
+        elements:
+          -
+            autocapitalize: true
+            autocomplete: false
+            autocorrect: true
+            class: null
+            disabled: false
+            id: null
+            instructions: null
+            label: Title
+            max: null
+            min: null
+            name: null
+            orientation: null
+            placeholder: null
+            readonly: false
+            requirable: false
+            required: false
+            size: null
+            step: null
+            tip: null
+            title: null
+            type: craft\commerce\fieldlayoutelements\ProductTitleField
+            warning: null
+            width: 100
+          -
+            fieldUid: 926b0db3-ab19-45c4-9520-7d29a56bac6b
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: 7ed1f322-eb91-4ae0-90e4-6820512975de
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Description
+        sortOrder: 1
+      -
+        elements:
+          -
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\commerce\fieldlayoutelements\VariantsField
+            warning: null
+        name: Variants
+        sortOrder: 2
+productTitleFormat: ''
+siteSettings:
+  1b84a752-7c81-46cd-840c-059cf7b00a03:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  2660bd5c-1f43-4885-8337-ab29818b7dd5:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  36c91ae9-5910-4c1a-9a8f-5d954b1ab6f9:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  4cbb0509-45ca-40ed-9c8b-85d905d9e62e:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  5d21a954-d6ff-4c16-a77d-c2f17d8c2225:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  62a401cd-ff6e-4f67-8095-54df23406a9c:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  64c35d5b-ea6f-4b55-a623-d034b0ba1087:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  78b51867-ca1e-4bb2-b8ee-f64b4d4ebb3c:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  7d4f742d-99a6-4087-a186-b767375ff31c:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  831021f8-d4bd-4ed9-929a-a79c2c907d24:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  860023a1-d26e-4ab8-b926-7ce6a187ef7c:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  97afb406-be52-4152-8b2e-3322f7197477:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  c6630f5d-c492-45d9-b87d-795c9d988cf0:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  cb9c61ec-ed8a-416e-aaab-80285bab6886:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  d7684726-a75c-43e9-8b06-f3b63ef0ecba:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  e293e18c-9b24-4098-a340-b136cfb50199:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+  eaf40bd9-2f1c-45ab-9981-9570c7a32f32:
+    hasUrls: true
+    template: products/_product
+    uriFormat: 'products/{slug}'
+skuFormat: ''
+titleFormat: '{product.title}'
+variantFieldLayouts:
+  7cc2d428-998c-437e-bb10-909a64972d8c:
+    tabs:
+      -
+        elements:
+          -
+            autocapitalize: true
+            autocomplete: false
+            autocorrect: true
+            class: null
+            disabled: false
+            id: null
+            instructions: null
+            label: Title
+            max: null
+            min: null
+            name: null
+            orientation: null
+            placeholder: null
+            readonly: false
+            requirable: false
+            required: false
+            size: null
+            step: null
+            tip: null
+            title: null
+            type: craft\commerce\fieldlayoutelements\VariantTitleField
+            warning: null
+            width: 100
+          -
+            fieldUid: 71cefca0-5801-4969-99d9-21657ac0b5c3
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: f3bb206c-f631-46fc-b84c-e472dc65a069
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1

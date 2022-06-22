@@ -1,0 +1,46 @@
+{% if currentUser %}
+    {% redirect 'checkout/addresses' %}
+{% endif %}
+
+{% extends '_layouts/checkout' %}
+
+{% block content %}
+
+{#    {% if not cart.email %}#}
+{#        {% redirect 'checkout' %}#}
+{#    {% endif %}#}
+
+    {# Does a user exist with this email address? #}
+  {% set userExists = null %}
+  {% set userExistsButCantLogin = null %}
+    {% if cart.email %}
+        {% set userExists = craft.users.email(cart.email).one() %}
+        {% set userExistsButCantLogin = craft.users.email(cart.email).status(['locked','suspended','pending']).one() %}
+    {% endif %}
+    {% if userExistsButCantLogin %}
+            {% redirect 'checkout/addresses' %}
+    {% endif %}
+    {% set redirect = '/checkout/addresses' %}
+            {% if userExists %}
+              {% include "_includes/_sign-in" with { redirect: redirect } %}
+            {% else %}
+              {% include "_includes/_register" with { redirect: redirect} %}
+
+            {% endif %}
+
+{% endblock %}
+{% js %}
+var password = document.getElementById("savePassword")
+  , confirm_password = document.getElementById("confirmPassword");
+
+function validatePassword(){
+  if(password.value != confirm_password.value) {
+    confirm_password.setCustomValidity("Passwords Don't Match");
+  } else {
+    confirm_password.setCustomValidity('');
+  }
+}
+
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
+{% endjs %}

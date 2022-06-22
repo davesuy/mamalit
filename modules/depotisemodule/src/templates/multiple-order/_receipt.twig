@@ -1,0 +1,117 @@
+{% requireAdmin %}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+{% set title  = "Multiple Order" %}
+
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+
+{% endblock %}
+
+{% block body %}
+  {% set childOrders =  multipleOrder.getChildOrders() %}
+<style>
+  html {
+    width: 360px !important;
+  }
+</style>
+  <div class="tt-wrapper" id="depotise-app" style="padding: 10px; background-color: #fff; max-width: 360px">
+
+    <strong class="tt-title text-center">Mamalit</strong><br/>
+      <span class="text-center">Alegria, Cordova, Cebu City, Philippines</span><br/>
+    <span class="text-center">TIN: 125-501-502-000</span>
+
+          <p><strong>Reference:</strong> {{ multipleOrder }}</p>
+          <p width="40%"><strong>Date Ordered:</strong> {{ multipleOrder.dateOrdered|date("F jS \\a\\t g:ia") }}</p>
+          <p>
+            {% if multipleOrder.shippingAddress is not null %}
+            <strong>Address:</strong>
+                <span>{{ multipleOrder.shippingAddress.title }}</span>
+                <span>
+                  <i>{{ multipleOrder.shippingAddress.firstName }}</i>
+                  <i>{{ multipleOrder.shippingAddress.lastName }}</i>
+                </span>
+                <span><strong>{{ multipleOrder.shippingAddress.businessName }}</strong></span>
+                <span class="text-grey-dark"><strong>{{ multipleOrder.shippingAddress.businessTaxId }}</strong></span>
+                <span>{{ multipleOrder.shippingAddress.address1 }}</span>
+                <span>{{ multipleOrder.shippingAddress.address2 }}</span>
+                <span>{{ multipleOrder.shippingAddress.address3 }}</span>
+                <span>
+                  <span>{{ multipleOrder.shippingAddress.zipCode }}</span>
+                  <span>{{ multipleOrder.shippingAddress.city }}</span>
+                </span>
+                <span>{{ multipleOrder.shippingAddress.countryText }}</span>
+                <span>{{ multipleOrder.shippingAddress.stateText }}</span>
+
+            {% endif %}
+          </p>
+          <p>
+            {% set customer = craft.commerce.customers.customer %}
+            {% set user = craft.app.users.getUserById(customer.userId) %}
+              <span>ID: {{ multipleOrder.customerId }}</span><br />
+              <span>Customer Email: {{ multipleOrder.email }}</span>
+
+          </p>
+
+        {% set overall = multipleOrder.getOverAllTotalAndQty %}
+
+
+          <p><strong>Overall Total:</strong> {{ overall.total|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</p>
+
+          <p><strong>Overall Sub Total:</strong> {{ overall.subTotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</p>
+
+          <p><strong>Overall Delivery Total:</strong> {{ overall.deliveryTotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</p>
+
+          <p><strong>Overall Quantity:</strong> {{ overall.qty }}</p>
+
+      <hr /><br />
+      {% if childOrders|length %}
+        {% for order in childOrders %}
+
+                <p> <strong style="text-align: center;" class="tt-title-02">Store:</strong> {{ craft.depotiseModule.getSite(order.siteId).name }}
+                </p>
+                <p><strong>Order number:</strong> <a href="{{ cpUrl('commerce/orders/' ~ order.id) }}">{{ order.reference }}</a></p>
+                <p><strong>{{ "Total"|t }}:</strong> {{ order.totalPrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</p>
+
+
+              {% for item in order.lineItems %}
+
+                  <p>
+                    <strong>{{ item.description }}</strong> |
+                    {% if item.onSale %}
+                      <strike>{{ item.price|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</strike> {{ item.salePrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }} |
+                    {% else %}
+                      {{ item.price|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }} |
+                    {% endif %}
+                   {{ item.qty }}x | {{ item.subtotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}
+                  </p>
+
+              {% endfor %}
+
+              {#              {% for adjustment in order.adjustments %}#}
+              {#                <tr>#}
+              {#                  <p>{{ adjustment.type }}</p>#}
+              {#                  <td colspan="2"><strong>{{ adjustment.name }}</strong><br>({{ adjustment.description }})</p>#}
+              {#                  <td#}
+              {#                    class="text-right">{{ adjustment.amount|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</p>#}
+              {#                </tr>#}
+              {#              {% endfor %}#}
+
+
+                  <p>Total Delivery: {{ order.totalShippingCost|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}
+                  <br />
+{#                  Item#}
+{#                  Total: {{ order.itemTotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}#}
+{#                  <br>#}
+                 Total: {{ order.totalPrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</p>
+
+
+          <hr /><br />
+        {% endfor %}
+      {% endif %}
+</div>
+{% endblock %}
+
+

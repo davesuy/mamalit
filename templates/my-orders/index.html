@@ -1,0 +1,54 @@
+{% extends '_layouts/main' %}
+
+{% set extraHead %}
+  {# We don't want the order info indexed by search engines. #}
+  <meta name="robots" content="noindex">
+{% endset %}
+
+{% block main %}
+  {% if currentUser %}
+    {% set multipleOrders = craft.depotiseModule.getMultipleOrdersByCustomerId(craft.commerce.customers.customer.id) %}
+    <h1 class="tt-title-subpages noborder">ACCOUNT</h1>
+    <div class="tt-shopping-layout">
+      <div class="tt-wrapper">
+        <h3 class="tt-title">ORDER HISTORY</h3>
+        <div class="tt-table-responsive">
+        {% if multipleOrders|length %}
+          <table class="tt-table-shop-01">
+            <thead>
+            <tr>
+              <th>{{ "Reference"|t }}</th>
+              <th>{{ "Date Ordered"|t }}</th>
+              <th>{{ "Stores"|t }}</th>
+              <th>{{ "Quantity"|t }}</th>
+              <th>{{ "Total"|t }}</th>
+              <th>{{ "View"|t }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {# Get completed orders for the current customer.#}
+            {% for multipleOrder in multipleOrders %}
+              <tr>
+                <td><a
+                    href="{{ url('/customer/multiple-order', {reference: multipleOrder.id }) }}">{{ multipleOrder.id }}</a>
+                </td>
+                <td>{{ multipleOrder.dateOrdered ? multipleOrder.dateOrdered|date("F jS \\a\\t g:ia") : null }}</td>
+                <td>{{ multipleOrder.stores ?? '' }}</td>
+                <td>{{ multipleOrder.qty }}</td>
+                <td>{{ craft.depotiseModule.app.primaryCurrencySymbol() }}{{ multipleOrder.total }}</td>
+                <td><a href="{{ url('/customer/multiple-order', {reference: multipleOrder.id }) }}">View</a></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="empty-index">
+            <i class="fas fa-box-open"></i>
+            <p>You don’t have any orders yet. <br/><a href="{{ url('products') }}">Continue shopping</a></p>
+          </div>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

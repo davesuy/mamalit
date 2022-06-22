@@ -1,0 +1,142 @@
+{% if not currentUser %}
+    {% redirect 'social/login' %}
+{% endif %}
+
+{% extends "social/_layouts/site" %}
+{% import "social/_includes/forms" as forms %}
+
+{% set selectedNav = 'profile' %}
+
+{% if user is not defined %}
+    {% set user = currentUser %}
+{% endif %}
+
+{% block main %}
+    <h2>Profile</h2>
+
+    <hr>
+
+    {# Photo #}
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-3">
+                {% if user.photo %}
+                    {% set photoUrl = user.photo.url %}
+                {% else %}
+                    {% set photoUrl = view.getAssetManager().getPublishedUrl('@depotisesocial/icons/defaultuser.svg', true) %}
+                {% endif %}
+
+                <img src="{{ photoUrl }}" class="img-responsive img-rounded" />
+            </div>
+            <div class="col-md-9">
+                <form method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="action" value="users/save-user">
+                    <input type="hidden" name="userId" value="{{ user.id }}">
+                    {{ csrfInput() }}
+                    {{ redirectInput('social/profile') }}
+
+                    <label for="photo">{{ (user.photo.url is defined ? 'Change Photo' : 'Upload Photo') }}</label><br />
+                    <p>
+                        <input type="file" name="photo" value="{{ (user.photo.url is defined ? 'Change Photo' : 'Upload') }}">
+                    </p>
+
+                    <p>
+                        <input type="submit" class="btn btn-sm btn-primary" value="Upload Photo" />
+                    </p>
+                </form>
+
+                {% if user.photo %}
+                    <form id="delete-photo-form" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="users/delete-user-photo">
+                        <input type="hidden" name="userId" value="{{ user.id }}">
+                        {{ csrfInput() }}
+                        {{ redirectInput('social/profile') }}
+
+                        <p>
+                            <input type="submit" class="btn btn-sm btn-danger" value="Delete Photo" />
+                        </p>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    {# Profile #}
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="users/save-user">
+        <input type="hidden" name="userId" value="{{ user.id }}">
+        {{ csrfInput() }}
+        {{ redirectInput('social/profile') }}
+
+        <div class="row">
+            <div class="col-md-6">
+                {{ forms.textField({
+                    label: "First Name",
+                    id: "firstName",
+                    name: "firstName",
+                    value: user.firstName,
+                    errors: user.getErrors('firstName')
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ forms.textField({
+                    label: "Last Name",
+                    id: "lastName",
+                    name: "lastName",
+                    value: user.lastName,
+                    errors: user.getErrors('lastName')
+                }) }}
+            </div>
+        </div>
+
+        {% if user['gender'] is defined %}
+            {{ forms.textField({
+                label: "Gender",
+                id: "gender",
+                name: "fields[gender]",
+                value: user.gender,
+                errors: user.getErrors('gender')
+            }) }}
+        {% endif %}
+
+        {% if user['location'] is defined %}
+            {{ forms.textField({
+                label: "Location",
+                id: "location",
+                name: "fields[location]",
+                value: user.location,
+                errors: user.getErrors('location')
+            }) }}
+        {% endif %}
+
+        <input type="submit" class="btn btn-primary" value="Save" />
+    </form>
+{% endblock %}
+
+{% js %}
+    var $form = $('#delete-photo-form');
+    var $submitBtn = $form.find('input[type="submit"]');
+
+    $form.submit(function(ev) {
+        ev.preventDefault();
+        $submitBtn.prop('disabled', true);
+
+        $.ajax({
+            type:"POST",
+            data: $(this).serialize(),
+            dataType: 'json',
+            url: "{{ actionUrl('users/delete-user-photo') }}",
+            success: function() {
+                location.reload()
+
+            },
+            error: function() {
+                location.reload()
+            }
+        });
+    });
+{% endjs %}

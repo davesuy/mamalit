@@ -1,0 +1,158 @@
+{% extends '_layouts/main' %}
+
+{% set extraHead %}
+  {# We don't want the order info indexed by search engines. #}
+  <meta name="robots" content="noindex">
+{% endset %}
+
+{% block main %}
+  {% set id = craft.app.request.getParam('reference') %}
+  {% set multipleOrder = craft.depotiseModule.app.orders.getMultipleOrderByCustomerId(craft.commerce.customers.customer.id, id) %}
+  {% set orders = multipleOrder.childOrders() %}
+
+  {% if currentUser %}<h5><a href="{{ url('/my-orders') }}"><i class="icon-e-14 small"></i>Order History</a>
+    </h5>{% endif %}
+  <div class="tt-wrapper">
+    <h3 class="tt-title">ORDER DETAILS</h3>
+    <div class="tt-table-responsive">
+      <table class="tt-table-shop-02 mb-5">
+        <tbody>
+        <tr>
+          <td>Reference:</td>
+          <td>{{ multipleOrder }}</td>
+        </tr>
+        <tr>
+          <td>Date Ordered:</td>
+          <td>{{ multipleOrder.dateOrdered|date("F jS \\a\\t g:ia") }}</td>
+        </tr>
+        <tr>
+          <td>Shipping to:</td>
+          <td>
+            {% if multipleOrder.shippingAddress is not null %}
+              {% include '_includes/addresses/address' with { address: multipleOrder.shippingAddress } %}
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td>Customer:</td>
+          <td>
+            {% set customer = craft.commerce.customers.customer %}
+            {% set user = craft.app.users.getUserById(customer.userId) %}
+            <dl>
+              <dd>ID: {{ customer.id }}</dd>
+              <dd>Email: {{ user.email }}</dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td>Payment Method:</td>
+          <td>{{ orders[0].getGateway().name }}</td>
+        </tr>
+        {% set overall = multipleOrder.getOverAllTotalAndQty %}
+        <tr>
+          <td>Overall Total:</td>
+          <td>{{ overall.total|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+        </tr>
+        <tr>
+          <td>Overall Sub Total:</td>
+          <td>{{ overall.subTotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+        </tr>
+        <tr>
+          <td>Overall Delivery Total:</td>
+          <td>{{ overall.deliveryTotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+        </tr>
+        <tr>
+          <td>Overall Quantity:</td>
+          <td>{{ overall.qty }}</td>
+        </tr>
+        </tbody>
+      </table>
+      {% if orders|length %}
+        {% for order in orders %}
+          <div class="mb-5">
+            <h3 class="tt-title-02">Store: {{ craft.depotiseModule.getSite(order.siteId).name }}</h3>
+
+            <table class="tt-table-shop-02 mb-2">
+              <tbody>
+              <tr>
+                <td>Order number:</td>
+                <td>{{ order.reference }}</td>
+              </tr>
+              <tr>
+                <td>{{ "Total"|t }}:</td>
+                <td>{{ order.totalPrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+              </tr>
+              <tr>
+                <td>{{ "Total Delivery"|t }}:</td>
+                <td>{{ order.totalShippingCost|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+              </tr>
+              <tr>
+                <td>{{ "Status"|t }}:</td>
+                <td>
+                  {{ order.orderStatus }}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+            <h5 class="tt-title">Details</h5>
+            <table class="tt-table-shop-02">
+              <thead>
+              <tr>
+                <th style="width: 40%">Item</th>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+                <th class="text-right">Total</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for item in order.lineItems %}
+                <tr>
+                  <td>
+                    <strong>{{ item.description }}</strong><br>
+                    SKU: {{ item.sku }}
+                  </td>
+                  <td>
+                    {% if item.onSale %}
+                      {{ item.salePrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}
+                    {% else %}
+                      {{ item.salePrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}
+                    {% endif %}
+                  </td>
+                  <td>{{ item.qty }}</td>
+                  <td
+                    class="text-right">{{ item.subtotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+                </tr>
+              {% endfor %}
+
+{#              {% for adjustment in order.adjustments %}#}
+{#                <tr>#}
+{#                  <td>{{ adjustment.type }}</td>#}
+{#                  <td colspan="2"><strong>{{ adjustment.name }}</strong><br>({{ adjustment.description }})</td>#}
+{#                  <td#}
+{#                    class="text-right">{{ adjustment.amount|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>#}
+{#                </tr>#}
+{#              {% endfor %}#}
+
+              <tr>
+                <td colspan="4" class="text-right">
+                  Total Delivery: {{ order.totalShippingCost|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}
+                  <br />
+                  Item
+                  Total: {{ order.itemTotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}
+                  <br>
+                  <h4>
+                    Total: {{ order.totalPrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</h4>
+                </td>
+              </tr>
+
+              </tbody>
+            </table>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+
+
+{% endblock %}

@@ -1,0 +1,27 @@
+<form method="post" @submit.prevent="submitFilter">
+    {% for field in fields %}
+        <div class="form-group my-3">
+          {% if field.object.handle is not same as('title') %}
+
+          {% endif %}
+            <div class="input">
+              {% if field.object.handle == 'productCategories' %}
+                <label class="radio"v-if="categories" v-for="category in categories">
+
+                  <input type="radio" v-model="config.params.fields.productCategories" :value="category.id" />
+                  <span class="outer"><span class="inner"></span></span><a :href="'/' + category.uri">${ category.title }</a>
+                </label>
+              {% else %}
+
+                {% if field.object.handle == 'title' %}
+
+                {% else %}
+                  {{ field.html()|raw }}
+                {% endif %}
+              {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+
+    <button v-if="categories.length > 0" @click="clearFilter" class="btn-primary btn-sm" type="button" name="reset" value="1">Clear</button>
+</form>

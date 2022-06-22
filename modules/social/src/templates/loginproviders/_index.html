@@ -1,0 +1,62 @@
+{% extends "depotise-social/settings/_layout" %}
+{% import "_includes/forms" as forms %}
+
+{% set selectedNavItem = 'loginProviders' %}
+
+{% set content %}
+
+    <table id="fields" class="data fullwidth collapsible">
+        <thead>
+            <tr>
+                <th scope="col">{{ "Name" }}</th>
+                <th scope="col">{{ "Handle" }}</th>
+                <th scope="col">{{ "Status" }}</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for loginProvider in loginProviders %}
+                <tr>
+                    <th>
+                        <div class="provider">
+                            <div class="thumb">
+                                <img src="{{ loginProvider.getIconUrl() }}" width="32" height="32" />
+                            </div>
+                            <div class="label">
+                                {{ loginProvider.name }}
+                            </div>
+                        </div>
+                    </th>
+
+                    <td class="light"><code>{{ loginProvider.handle }}</code></td>
+
+                    <td>
+                        <form method="post" accept-charset="UTF-8">
+
+                            <input type="hidden" name="loginProvider" value="{{ loginProvider.handle }}">
+
+                            {{ csrfInput() }}
+
+                            {% if loginProvider.isConfigured %}
+                                {% if loginProvider.isEnabled  %}
+                                    <span class="status on"></span> {{ "Enabled" }} 
+                                    <input type="button" value="{{ 'Disable' }}" class="btn small formsubmit" data-action="depotise-social/login-providers/disable-login-provider">
+                                {% else %}
+                                    <span class="status"></span> {{ "Disabled" }} 
+                                    <input type="button" value="{{ 'Enable' }}" class="btn small formsubmit" data-action="depotise-social/login-providers/enable-login-provider">
+                                {% endif %}
+                            {% else %}
+                                <span class="status"></span> {{ "Not configured" }} 
+                            {% endif %}
+                        </form>
+
+                    </td>
+                    <td>
+                        <a href="{{ url('settings/depotise-social/loginproviders/'~loginProvider.handle) }}"><span class="icon settings"></span> {{ "Settings" }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endset %}

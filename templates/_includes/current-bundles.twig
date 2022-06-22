@@ -1,0 +1,13 @@
+{% set currentCategory = craft.depotiseModule.app.categories.currentBundle %}
+<div class="text-center">
+  {% if currentCategory %}
+    <h3 class="tt-collapse-title">{{ currentCategory.title }}</h3>
+    {% if currentCategory.parent  %}
+       <h5><a href="/{{ currentCategory.parent.uri }}">&laquo; Back to {{ currentCategory.parent.title }}</a></h5>
+    {% else %}
+      <h5><a href="/bundles">&laquo; Back to All Bundles</a></h5>
+    {% endif %}
+  {% else %}
+
+  {% endif %}
+</div>

@@ -1,0 +1,27 @@
+fieldLayouts:
+  da1240f3-1331-4987-b71e-801f2e8c7906:
+    tabs:
+      -
+        elements:
+          -
+            fieldUid: 26a71ebf-1183-474e-9888-b0066c413f84
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: 71cefca0-5801-4969-99d9-21657ac0b5c3
+            instructions: null
+            label: null
+            required: '0'
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: 'Tab 1'
+        sortOrder: 1
+handle: set
+name: Set

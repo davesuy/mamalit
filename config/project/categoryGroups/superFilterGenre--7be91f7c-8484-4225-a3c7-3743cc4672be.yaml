@@ -1,0 +1,105 @@
+fieldLayouts:
+  44b4aa7a-2935-49c2-9480-bfb3487dab39:
+    tabs:
+      -
+        elements:
+          -
+            autocapitalize: true
+            autocomplete: false
+            autocorrect: true
+            class: null
+            disabled: false
+            id: null
+            instructions: null
+            label: null
+            max: null
+            min: null
+            name: null
+            orientation: null
+            placeholder: null
+            readonly: false
+            requirable: false
+            required: false
+            size: null
+            step: null
+            tip: null
+            title: null
+            type: craft\fieldlayoutelements\TitleField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+handle: superFilterGenre
+name: Genre
+siteSettings:
+  1b84a752-7c81-46cd-840c-059cf7b00a03:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  2660bd5c-1f43-4885-8337-ab29818b7dd5:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  36c91ae9-5910-4c1a-9a8f-5d954b1ab6f9:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  4cbb0509-45ca-40ed-9c8b-85d905d9e62e:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  5d21a954-d6ff-4c16-a77d-c2f17d8c2225:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  62a401cd-ff6e-4f67-8095-54df23406a9c:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  64c35d5b-ea6f-4b55-a623-d034b0ba1087:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  78b51867-ca1e-4bb2-b8ee-f64b4d4ebb3c:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  7d4f742d-99a6-4087-a186-b767375ff31c:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  831021f8-d4bd-4ed9-929a-a79c2c907d24:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  860023a1-d26e-4ab8-b926-7ce6a187ef7c:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  97afb406-be52-4152-8b2e-3322f7197477:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  c6630f5d-c492-45d9-b87d-795c9d988cf0:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  cb9c61ec-ed8a-416e-aaab-80285bab6886:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  d7684726-a75c-43e9-8b06-f3b63ef0ecba:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  e293e18c-9b24-4098-a340-b136cfb50199:
+    hasUrls: false
+    template: null
+    uriFormat: null
+  eaf40bd9-2f1c-45ab-9981-9570c7a32f32:
+    hasUrls: false
+    template: null
+    uriFormat: null
+structure:
+  maxLevels: null
+  uid: 35e54016-2fd1-4b38-91bb-afc2565aa159

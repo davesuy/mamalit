@@ -1,0 +1,22 @@
+{% extends "_layouts/cp" %}
+
+{% set title = "Social Settings" %}
+
+{% set docsUrl = 'https://docs.dukt.net/social/v2/' %}
+
+{% set crumbs = [
+    { label: "Settings", url: url('settings') },
+] %}
+
+{% set navItems = {
+    loginProviders: { label: "Login Providers", url: url('settings/depotise-social/loginproviders') },
+    settings: { label: "Settings", url: url('settings/depotise-social/settings') },
+} %}
+
+{% set docTitle = navItems[selectedNavItem].label~' - '~title %}
+
+{% block sidebar %}
+    <nav>
+        {% include "_includes/nav" with { items: navItems, selectedItem: selectedNavItem } only %}
+    </nav>
+{% endblock %}

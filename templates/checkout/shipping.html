@@ -1,0 +1,61 @@
+{% extends '_layouts/checkout' %}
+{% if currentUser is null %}
+  {% redirect "/checkout" %}
+{% endif %}
+
+{% block content %}
+  {% if (cart is defined and cart.shippingAddressId is null) %}
+    {% redirect "/checkout/addresses" %}
+  {% endif %}
+
+      <shipping></shipping>
+
+{#      <form method="POST">#}
+{#        <input type="hidden" name="action" value="depotise-module/cart/update-shipping">#}
+{#        {{ redirectInput('/checkout/payment') }}#}
+{#        {{ csrfInput() }}#}
+{#        {% if craft.depotiseModule.app.carts.activeOrders %}#}
+{#          {% for cart in craft.depotiseModule.app.carts.activeOrders %}#}
+{#            {% if cart.order.lineItems %}#}
+{#              {% set site = craft.app.sites.getSiteById(cart.site) %}#}
+{#              <h2>Site - {{ site.name }}</h2>#}
+{#              {% if cart.order.availableShippingMethods|length < 2 and cart.order.shippingMethod %}#}
+{#                {% redirect '/checkout/payment' %}#}
+{#              {% endif %}#}
+
+{#              {% if not cart.order.availableShippingMethods|length %}#}
+{#                <p>No shipping methods available.<p><p><a class="button button-primary"#}
+{#                                                          href="{{ url('checkout/payment') }}">Continue to#}
+{#                  payment</a></p>#}
+{#              {% endif %}#}
+
+{#              {% if cart.order.availableShippingMethods|length %}#}
+
+
+{#                {% for handle, method in cart.order.availableShippingMethods %}#}
+{#                  <div class="shipping-select">#}
+{#                    <label>#}
+
+{#                      <input type="radio" name="orders[{{ cart.order.number }}][shippingMethodHandle]" value="{{ handle }}"#}
+{#                             {% if handle == cart.order.shippingMethodHandle %}checked{% endif %} />#}
+{#                      <strong>{{ method.name }}</strong>#}
+
+{#                      <span class="price">#}
+{#                            {{ method.priceForOrder(cart.order)|commerceCurrency(cart.order.currency) }}#}
+{#                        </span>#}
+{#                    </label>#}
+{#                  </div>#}
+{#                {% endfor %}#}
+{#                <span class="flash">{{ cart.order.getErrors('shippingMethod')|join }}</span>#}
+
+
+{#              {% endif %}#}
+{#            {% endif %}#}
+{#          {% endfor %}#}
+{#        {% endif %}#}
+{#        <p><input type="submit" class="button button-primary" value="Select Shipping Method"/></p>#}
+
+{#      </form>#}
+{#  {% include "_includes/order-review" with { showShippingAddress: true } %}#}
+
+{% endblock %}

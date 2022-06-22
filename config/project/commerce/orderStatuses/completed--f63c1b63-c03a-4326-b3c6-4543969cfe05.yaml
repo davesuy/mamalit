@@ -1,0 +1,6 @@
+color: green
+default: false
+description: ''
+handle: completed
+name: Completed
+sortOrder: 99

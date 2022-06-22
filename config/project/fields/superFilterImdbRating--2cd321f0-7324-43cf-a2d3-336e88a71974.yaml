@@ -1,0 +1,77 @@
+contentColumnType: string
+fieldGroup: 3de17496-4f79-4698-9690-1f884df149eb
+handle: superFilterImdbRating
+instructions: ''
+name: 'Imdb Rating'
+searchable: true
+settings:
+  options:
+    -
+      __assoc__:
+        -
+          - label
+          - '4'
+        -
+          - value
+          - '4'
+        -
+          - default
+          - ''
+    -
+      __assoc__:
+        -
+          - label
+          - '5'
+        -
+          - value
+          - '5'
+        -
+          - default
+          - ''
+    -
+      __assoc__:
+        -
+          - label
+          - '6'
+        -
+          - value
+          - '6'
+        -
+          - default
+          - ''
+    -
+      __assoc__:
+        -
+          - label
+          - '7'
+        -
+          - value
+          - '7'
+        -
+          - default
+          - ''
+    -
+      __assoc__:
+        -
+          - label
+          - '8'
+        -
+          - value
+          - '8'
+        -
+          - default
+          - ''
+    -
+      __assoc__:
+        -
+          - label
+          - '9'
+        -
+          - value
+          - '9'
+        -
+          - default
+          - ''
+translationKeyFormat: null
+translationMethod: none
+type: craft\fields\RadioButtons

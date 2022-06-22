@@ -1,0 +1,78 @@
+{% extends '_layouts/main' %}
+
+{% block main %}
+  <div class="mt-8">
+    <a href="{{ url('products') }}">&larr; All products</a>
+  </div>
+
+  <div class="product-details">
+    <div id="app">
+      <div class="vld-parent">
+        <h1>{{ product.title }}</h1>
+        <loading :active.sync="loading" :is-full-page="false"
+        ></loading>
+        <form method="POST">
+          <input type="hidden" name="action" value="depotise-module/cart/add-cart">
+          {{ redirectInput('/cart') }}
+          <input type="hidden" name="siteId" value="{{ craft.app.sites.currentSite.id }}">
+          <input type="hidden" name="qty" value="1">
+          {{ csrfInput() }}
+          {#        <div class="field">#}
+          {#          <select name="purchasableId">#}
+          {#            {% for purchasable in product.variants %}#}
+          {#              <option {% if purchasable.stock <= 0 and purchasable.hasUnlimitedStock == false %}disabled {% endif %}#}
+          {#                      value="{{ purchasable.id }}">{{ purchasable.price|commerceCurrency(cart.currency) }}#}
+          {#                - {{ purchasable.title }}</option>#}
+          {#            {% endfor %}#}
+          {#          </select>#}
+
+          {#        </div>#}
+          {#        <div >#}
+          {#          {{ product.importBody|raw|nl2br }}#}
+          {#        </div>#}
+
+
+          <product-variant :variants="variants" @cart-added="cartAdded"></product-variant>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% js %}
+let actionUrl = '{{ actionUrl('depotise-module/product/get-product') }}';
+let productId = '{{ product.id }}';
+let siteId = '{{ product.siteId }}';
+{% endjs %}
+{% js %}
+new Vue({
+  el: "#app",
+  delimiters: ['${', '}'],
+  data: {
+    variants: {},
+    loading: true,
+    csrf: {},
+    time: null
+  },
+  methods: {
+    cartAdded() {
+      console.log('cart added');
+      // let date = new Date();
+      // this.time = date.getTime();
+    }
+  },
+  mounted() {
+    this.csrf = {};
+    this.csrf[csrfTokenName] = csrfTokenValue ;
+
+    let data = {};
+    data['productId'] = productId;
+    data['siteId'] = siteId;
+
+    axios.post(actionUrl, {...this.csrf, ...data})
+      .then((response) => {
+        this.variants = response.data.variants;
+        this.loading = false;
+      });
+  }
+})
+{% endjs %}

@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Receipt for order {{ order.reference }}</title>
+    <!--
+    The style block is collapsed on page load to save you some scrolling.
+    Postmark automatically inlines all CSS properties for maximum email client
+    compatibility. You can just update styles here, and Postmark does the rest.
+    -->
+    <style type="text/css" rel="stylesheet" media="all">
+    /* Base ------------------------------ */
+
+    {% include '_emails/styles.css' %}
+    table.payment {
+        border-collapse: collapse;
+    }
+    table.payment td,
+    table.payment th {
+        border:1px solid #cccccc;
+        padding: 3px;
+
+    }
+    </style>
+  </head>
+  <body>
+    <span class="preheader">A new web order has been received on {{ order.dateOrdered|date('l jS F Y') }}. Order reference is {{order.reference}}. Order status is currently {{order.orderStatus.name}}.</span>
+    <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center">
+
+          <table class="email-content" width="100%" cellpadding="0" cellspacing="0">
+              {% include '_emails/include/header.html' with { heading: "Web Order Received" } %}
+            <!-- Email Body -->
+            <tr>
+              <td class="email-body" width="100%" cellpadding="0" cellspacing="0">
+                <table class="email-body_inner" align="center" width="100%" cellpadding="0" cellspacing="0">
+                  <!-- Body content -->
+                  <tr>
+                    <td class="content-cell">
+                        <h2>Order Details</h2>
+                        <p>A new web order has been received.</p>
+                        <p>Order Date: {{ order.dateOrdered|date('jS F Y') }}<br />
+                            Order ID: {{order.id}}<br />
+                            Order Reference: {{order.reference}}<br />
+                            {# Short Number: {{order.shortNumber}}<br /> #}
+                            Order Status: {{order.orderStatus.name}}<br />
+                        {#  Order Number: {{order.number}}#}</p>
+
+                        <h2>Payment</h2>
+                        <p>Payment Status: <strong>{{order.paidStatus}}</strong><br />
+                            Outstanding Balance: ₱{{order.outstandingBalance}}<br />
+                            Date Paid: {{order.datePaid|date('l jS F Y')}}<br />
+                            Payment Method: {{order.gateway}} </p>
+
+                            <p>{# Shipping Method: {{order.shippingMethodName}}<br />#}
+                            Total Weight: {{order.totalWeight}}kg</p>
+
+                            {# <p>Order Message: {{order.message}}</p> #}
+
+                        <h2>Customer</h2>
+                        <p>Customer Name: {{order.billingAddress.firstName}} {{order.billingAddress.lastName}}<br />
+                            Customer Email: {{order.email}}</p>
+
+
+                        <p><strong>{% if order.isUnpaid %}This order is not fully paid.{% elseif order.isPaid %}This order has been marked as PAID.{% endif %}</strong></p>
+
+                        <h2>Payment Transactions</h2>
+                        {% if order.transactions|length %}
+                        <table class="payment">
+                            <tr>
+                                <th>Date</th>
+                                <th>Reference</th>
+
+
+
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                                <th>Amount</th>
+                            </tr>
+                                {% for payment in order.transactions %}
+                            <tr>
+                                <td>{{payment.dateCreated|date('j/m/y')}}</td>
+                                <td>{{payment.reference}}</td>
+
+
+                                <td>{{payment.type}}</td>
+                                <td>{{payment.status}}</td>
+                                <td>{{payment.note}}</td>
+                                <td>₱{{payment.amount|number_format(2, '.', ',')}}</td>
+                            </tr>
+                                {% endfor %}
+                            </table>
+                            {% else %}
+                            <p><strong>No payment transactions could be found for this order.</strong></p>
+                            {% endif %}
+
+
+
+
+  <table class="cta" align="center" width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td align="center">
+                            <!--<h1 class="cta_heading">Heading</h1>
+                            <p class="cta_body">Body</p>-->
+                            <!-- Border based button
+                       https://litmus.com/blog/a-guide-to-bulletproof-buttons-in-email-design -->
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td align="center">
+                                  <table border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                      <td>
+                                        <a href="{{order.cpEditUrl}}" class="button button--red" target="_blank">View Order</a>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+
+
+
+                          </td>
+                        </tr>
+                      </table>
+
+
+                      <!-- Sub copy -->
+                      <!--<table class="body-sub">
+                        <tr>
+                          <td>
+                            <p class="sub">Small footer text h ere</a> a PDF version.</p>
+                          </td>
+                        </tr>
+                      -->
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {% include '_emails/include/footer.html' %}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

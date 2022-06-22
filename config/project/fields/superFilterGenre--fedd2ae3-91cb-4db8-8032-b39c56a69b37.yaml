@@ -1,0 +1,23 @@
+contentColumnType: string
+fieldGroup: 3de17496-4f79-4698-9690-1f884df149eb
+handle: superFilterGenre
+instructions: null
+name: Genre
+searchable: false
+settings:
+  allowLimit: false
+  allowMultipleSources: false
+  allowSelfRelations: false
+  branchLimit: null
+  limit: null
+  localizeRelations: false
+  selectionLabel: null
+  showSiteMenu: true
+  source: 'group:7be91f7c-8484-4225-a3c7-3743cc4672be'
+  sources: '*'
+  targetSiteId: null
+  validateRelatedElements: false
+  viewMode: null
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Categories

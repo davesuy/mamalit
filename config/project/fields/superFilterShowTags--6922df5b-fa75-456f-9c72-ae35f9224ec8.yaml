@@ -1,0 +1,22 @@
+contentColumnType: string
+fieldGroup: 3de17496-4f79-4698-9690-1f884df149eb
+handle: superFilterShowTags
+instructions: ''
+name: 'Show Tags'
+searchable: true
+settings:
+  allowLimit: false
+  allowMultipleSources: false
+  allowSelfRelations: false
+  limit: null
+  localizeRelations: false
+  selectionLabel: ''
+  showSiteMenu: true
+  source: 'taggroup:7bf564eb-4757-4e49-86a5-21ef11a83830'
+  sources: '*'
+  targetSiteId: null
+  validateRelatedElements: false
+  viewMode: null
+translationKeyFormat: null
+translationMethod: site
+type: craft\fields\Tags

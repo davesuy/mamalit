@@ -1,0 +1,14 @@
+{% extends "_layouts/cp" %}
+
+{% set title = loginProvider.name %}
+
+{% set crumbs = [
+    { label: "Settings", url: url('settings') },
+    { label: "Social", url: url('settings/depotise-social') },
+    { label: "Login Providers", url: url('settings/depotise-social/loginproviders') },
+] %}
+
+{% set tabs = {
+    oauth: { label: "OAuth"|t, url: url('settings/depotise-social/loginproviders/'~loginProvider.handle) },
+    userFieldMapping: { label: "User Field Mapping"|t, url: url('settings/depotise-social/loginproviders/'~loginProvider.handle~'/user-field-mapping') },
+} %}

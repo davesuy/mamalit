@@ -1,0 +1,52 @@
+{% extends "depotise-social/loginproviders/_layout" %}
+{% import "_includes/forms" as forms %}
+
+{% set content %}
+    <form method="post">
+        {{ csrfInput() }}
+        <input type="hidden" name="action" value="depotise-social/login-providers/save-oauth-provider">
+        <input type="hidden" name="redirect" value="{{ 'settings/depotise-social/loginproviders'|hash }}">
+        <input type="hidden" name="handle" value="{{ loginProvider.handle }}">
+
+        <h2>{{ 'Step 1: Create the OAuth application' }}</h2>
+
+        <p>{{ 'Go to the {link}, create a new application or configure an existing one using the following settings:'|t('social', {link: '<a href="'~loginProvider.managerUrl~'">'~'{loginProvider} API Console'|t('social', { loginProvider: loginProvider.name })~'</a>'})|raw }}</p>
+
+        {{ forms.textField({
+            readonly: true,
+            label: "Redirect URI",
+            value: loginProvider.getRedirectUri(),
+            warning: loginProvider.getRedirectUriWarning()
+        }) }}
+
+        <h2>{{ 'Step 2: Configure the OAuth client' }}</h2>
+
+        <p>{{ '{loginProvider} will provide you with a client ID and secret for your application.'|t('social', { loginProvider: loginProvider.name }) }}</p>
+        <p>{{ 'Copy the client ID & client secret from the {link}, paste them below, and save.'|t('social', { link: '<a href="'~loginProvider.managerUrl~'">'~'{loginProvider} API Console'|t('social', { loginProvider: loginProvider.name })~'</a>'})|raw }}</p>
+
+        {{ forms.textField({
+            instructions: "Set the `loginProviders.{loginProviderHandle}.clientId` config in your `config/social.php` file."|t('social', {loginProviderHandle: loginProvider.handle}),
+            placeholder: "{loginProvider} Client ID"|t('social', { loginProvider: loginProvider.name }),
+            label: "Client ID",
+            name: 'clientId',
+            value: oauthProviderConfig.options.clientId ?? '',
+        }) }}
+
+        {{ forms.textField({
+            instructions: "Set the `loginProviders.{loginProviderHandle}.clientSecret` config in your `config/social.php` file."|t('social', {loginProviderHandle: loginProvider.handle}),
+            placeholder: "{loginProvider} Client Secret"|t('social', { loginProvider: loginProvider.name }),
+            label: "Client Secret",
+            name: 'clientSecret',
+            value: oauthProviderConfig.options.clientSecret ?? '',
+        }) }}
+
+        <div class="buttons">
+            <input type="submit" class="btn submit" value="{{ 'Save' }}" />
+        </div>
+    </form>
+
+    <hr>
+
+    <p><em>{{ 'Check the {link} for more details on how to setup OAuth.'|t('social', { link: '<a href="https://docs.dukt.net/social/v2/login-providers.html#oauth-configuration" target="_blank">documentation</a>'})|raw }}</em></p>
+
+{% endset %}

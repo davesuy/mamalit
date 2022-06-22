@@ -1,0 +1,23 @@
+enableVersioning: true
+handle: howItWorks
+name: 'How it works'
+previewTargets:
+  -
+    __assoc__:
+      -
+        - label
+        - 'Primary entry page'
+      -
+        - urlFormat
+        - '{url}'
+      -
+        - refresh
+        - '1'
+propagationMethod: all
+siteSettings:
+  97afb406-be52-4152-8b2e-3322f7197477:
+    enabledByDefault: true
+    hasUrls: true
+    template: how-it-works
+    uriFormat: how-it-works
+type: single

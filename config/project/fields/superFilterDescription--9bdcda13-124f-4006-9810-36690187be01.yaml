@@ -1,0 +1,18 @@
+contentColumnType: text
+fieldGroup: 3de17496-4f79-4698-9690-1f884df149eb
+handle: superFilterDescription
+instructions: null
+name: Description
+searchable: false
+settings:
+  byteLimit: null
+  charLimit: null
+  code: false
+  columnType: text
+  initialRows: 4
+  multiline: true
+  placeholder: null
+  uiMode: normal
+translationKeyFormat: null
+translationMethod: none
+type: craft\fields\PlainText

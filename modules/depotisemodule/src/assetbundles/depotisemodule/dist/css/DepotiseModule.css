@@ -1,0 +1,23 @@
+/**
+ * Depotise module for Craft CMS
+ *
+ * Depotise CSS
+ *
+ * @author    Dale
+ * @copyright Copyright (c) 2020 Dale
+ * @link      https://github.com/pdaleramirez
+ * @package   DepotiseModule
+ * @since     1.0.0
+ */
+@import "grid.css";
+.color-red {
+  color: red;
+}
+
+#line-item-order.order-table tr, #line-item-order.order-table td {
+  padding: 0;
+  padding-left: 4px;
+  font-size: .8rem;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+}

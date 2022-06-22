@@ -1,0 +1,60 @@
+{% set bundleSlug = craft.request.getSegment(-1) %}
+<div class="tt-product-listing row">
+  <div class="col-6 col-md-4 tt-col-item" v-for="item in items">
+    <div class="tt-product thumbprod-center" style="">
+      {% if bundleSlug == 'bundles' %}
+      <div class="tt-image-box">
+
+          <span class="tt-img">
+          <a :href="'/bundles/' + item.slug">
+              <template v-if="item.categoryImage != null">
+                <img width="200" :src="item.categoryImage.url"/>
+              </template>
+              <template v-else>
+                <img src="/images/no-variant-image.jpg"/>
+              </template>
+          </a>
+          </span>
+
+      </div>
+        <div class="tt-description d-block">
+          <h2><a :href="'/bundles/' + item.slug">${ item.title }</a></h2>
+        </div>
+      {% else %}
+      <div class="tt-image-box">
+        <a @click.prevent="showProduct(item)" class="tt-btn-quickview" data-toggle="modal" data-target="#ModalquickView"
+           data-tooltip="Quick View" data-tposition="left"></a>
+
+        <a @click.prevent="showProduct(item)">
+          <span class="tt-img">
+
+            <template v-if="item.firstVariantImage != null">
+              <img width="200" :src="item.firstVariantImage.url"/>
+            </template>
+            <template v-else>
+              <img src="/images/no-variant-image.jpg"/>
+            </template>
+
+          </span>
+        </a>
+      </div>
+        <div class="tt-description d-block">
+          <h2><a @click.prevent="showProduct(item)">${ item.title }</a></h2>
+          <div class="tt-price">
+            ${ item.defaultPriceAsCurrency }
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<!-- The modal -->
+<b-modal id="variant-modal" size="xl" @hidden="hideModal" hide-footer>
+  <template v-slot:modal-header="{ close }">
+    <a class="text-align-left size-large modal-close" @click="close()"><i class="icon-e-30"></i></a>
+  </template>
+
+  <product-variant :variants="selectedProduct.productVariants" @cart-added="cartAdded"></product-variant>
+
+</b-modal>
+

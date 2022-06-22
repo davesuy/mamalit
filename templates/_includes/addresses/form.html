@@ -1,0 +1,174 @@
+{% set country = craft.commerce.countries.getCountryByIso('PH') %}
+
+{% set modelName = modelName is defined ? modelName : 'address' %}
+{% set model = address is defined ? address : null %}
+
+<div class="addressBox {{ modelName }}">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label for="{{ modelName }}-address1">Address Line 1 *</label>
+        <input type="text" id="{{ modelName }}-address1" class="form-control" name="{{ modelName }}[address1]"
+               :class="{ 'form-group--error': $v.address1.$error }" v-model.trim="$v.address1.$model"
+               value="{{ model ? model.address1 : '' }}">
+        <template v-if="$v.address1.$error">
+          <span class="flash block text-danger" v-if="!$v.address1.required">Field is required.</span>
+          <span class="flash block  text-danger" v-if="!$v.address1.minLength">Address 1 must have at least ${$v.address1.$params.minLength.min}</span>
+        </template>
+        {% if model and model.getErrors('address1') %}
+          <span class="flash">{{ model.getErrors('address1')|join }}</span>
+        {% endif %}
+      </div>
+      <div class="form-group">
+        <label for="{{ modelName }}-address2">Address Line 2</label>
+        <input type="text" id="{{ modelName }}-address2" class="form-control" name="{{ modelName }}[address2]"
+               value="{{ model ? model.address2 : '' }}">
+        {% if model and model.getErrors('address2') %}
+          <span class="flash">{{ model.getErrors('address2')|join }}</span>
+        {% endif %}
+      </div>
+      <div class="form-group">
+        <label for="{{ modelName }}-address3">Barangay *</label>
+        <input type="text" id="{{ modelName }}-address3" class="form-control" name="{{ modelName }}[address3]"
+               :class="{ 'form-group--error': $v.address3.$error }" v-model.trim="$v.address3.$model"
+               value="{{ model ? model.address3 : '' }}">
+        <template v-if="$v.address3.$error">
+          <span class="flash block text-danger" v-if="!$v.address3.required">Field is required.</span>
+          <span class="flash block text-danger" v-if="!$v.address3.minLength">Barangay must have at least ${$v.address3.$params.minLength.min}</span>
+        </template>
+        {% if model and model.getErrors('address3') %}
+          <pan class="flash">{{ model.getErrors('address3')|join }}</pan>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ modelName }}-zipCode">Municipality/City</label>
+        <div>
+          <select v-model.trim="$v.zipCode.$model" class="form-control" name="{{ modelName }}[zipCode]">
+            <option value=null>Choose a Municipality/City</option>
+            {% for key, name in craft.depotiseModule.app.getPostCodes() %}
+              <option value="{{ key }}">{{ name }}</option>
+            {% endfor %}
+          </select>
+
+          <template v-if="$v.zipCode.$error">
+            <span class="flash block text-danger" v-if="!$v.zipCode.required">Field is required.</span>
+          </template>
+          {% if model and model.getErrors('zipCode') %}
+            <span class="flash text-danger">{{ model.getErrors('zipCode')|join }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="{{ modelName }}-state">Province:</label>
+        {% set states = craft.depotiseModule.app.getProvinces() %}
+        {% set options = (states is defined ? states : []) %}
+        {% if options|length is same as (1) %}
+          <span>{{ options[0].name }}</span>
+          <input type="hidden" name="{{ modelName }}[stateValue]" value="{{ options[0].id }}"/>
+        {% else %}
+
+          <select id="{{ modelName }}-stateId" data-modelname="{{ modelName }}"
+                  class="address-stateId form-control {% if options|length == 0 %}hidden{% endif %}"
+                  name="{{ modelName }}[stateValue]">
+            {% for key, option in options %}
+              {% set optionValue = (model ? model.stateId : '') %}
+              <option value="{{ option.id }}" {% if key == optionValue %}selected{% endif %}>{{ option.name }}</option>
+            {% endfor %}
+          </select>
+        {% endif %}
+      </div>
+      {#      <div class="form-group">#}
+      {#          <input type="text" data-modelname="{{ modelName }}" id="{{ modelName }}-stateName"#}
+      {#                 class="address-stateName {% if options|length > 0 %}hidden{% endif %} form-control"#}
+      {#                 {% if options|length == 0 %}name="{{ modelName }}[stateValue]"{% endif %}#}
+      {#                 value="{{ model ? model.stateName : '' }}">#}
+      {#          {% if model and model.getErrors('stateValue') %}#}
+      {#            <span class="flash">{{ model.getErrors('stateValue')|join }}</span>#}
+      {#          {% endif %}#}
+      {#      </div>#}
+      <div class="form-group">
+        <label for="{{ modelName }}-countryId">Country: </label>
+        <span>{{ country.name }}</span>
+        <input type="hidden" name="{{ modelName }}[countryId]" value="{{ country.id }}"/>
+        {% if model and model.getErrors('countryId') %}
+          <span class="flash">{{ model.getErrors('countryId')|join }}</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label for="{{ modelName }}-firstName">First Name *</label>
+        <input type="text" id="{{ modelName }}-firstName" class="form-control" name="{{ modelName }}[firstName]"
+               :class="{ 'form-group--error': $v.firstName.$error }" v-model.trim="$v.firstName.$model"
+               value="{{ model ? model.firstName : '' }}">
+        <template v-if="$v.firstName.$error">
+          <span class="flash block text-danger" v-if="!$v.firstName.required">Field is required.</span>
+          <span class="flash block text-danger" v-if="!$v.firstName.minLength">First Name must have at least ${$v.firstName.$params.minLength.min}</span>
+        </template>
+        {% if model and model.getErrors('firstName') %}
+          <span class=" flash">{{ model.getErrors('firstName')|join }}</span>
+        {% endif %}
+      </div>
+      <div class="form-group">
+        <label for="{{ modelName }}-lastName">Last Name</label>
+        <input type="text" id="{{ modelName }}-lastName" class="form-control" name="{{ modelName }}[lastName]"
+               value="{{ model ? model.lastName : '' }}">
+        {% if model and model.getErrors('lastName') %}
+          <span class="flash text-danger">{{ model.getErrors('lastName')|join }}</span>
+        {% endif %}
+      </div>
+      <div class="form-group">
+        <label for="{{ modelName }}-phone">Phone</label>
+        <div>
+          <span class="flex py-2">+63</span> <input class="form-control d-inline w-75"
+                                                    :class="{ 'form-group--error': $v.phone.$error }"
+                                                    v-model.trim="$v.phone.$model" type="text"
+                                                    id="{{ modelName }}-phone" class="w-full"
+                                                    name="{{ modelName }}[phone]"
+                                                    value="{{ model ? model.phone : '' }}">
+        </div>
+        {% if model and model.getErrors('phone') %}
+          <span class="flash">{{ model.getErrors('phone')|join }}</span>
+        {% endif %}
+        <template v-if="$v.phone.$error">
+          <span class="flash block text-danger" v-if="!$v.phone.required">Field is required.</span>
+          <span class="flash block text-danger" v-if="!$v.phone.minLength">Phone must have at least ${$v.phone.$params.minLength.min}</span>
+          <span class="flash block text-danger" v-if="!$v.phone.maxLength">Phone must have at most ${$v.phone.$params.maxLength.max}</span>
+          <span class="flash block text-danger" v-if="!$v.phone.numeric">Phone must be a number.</span>
+        </template>
+      </div>
+      <div class="form-group">
+        <label for="{{ modelName }}-alternativePhone">Alternative Phone</label>
+        <div>
+          <span class="flex py-2">+63</span> <input class="form-control d-inline w-75" type="text"
+                                                    id="{{ modelName }}-alternativePhone"
+                                                    :class="{ 'form-group--error': $v.alternativePhone.$error }"
+                                                    v-model.trim="$v.alternativePhone.$model"
+                                                    name="{{ modelName }}[alternativePhone]"
+                                                    value="{{ model ? model.alternativePhone : '' }}">
+
+          {% if model and model.getErrors('alternativePhone') %}
+            <span class="flash">{{ model.getErrors('alternativePhone')|join }}</span>
+          {% endif %}
+          <template v-if="$v.alternativePhone.$error">
+            <span class="flash block text-danger" v-if="!$v.alternativePhone.minLength">Phone must have at least ${$v.alternativePhone.$params.minLength.min}</span>
+            <span class="flash block text-danger" v-if="!$v.alternativePhone.maxLength">Phone must have at most ${$v.alternativePhone.$params.maxLength.max}</span>
+            <span class="flash block text-danger" v-if="!$v.alternativePhone.numeric">Phone must be a number.</span>
+          </template>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="{{ modelName }}-notes">Notes</label>
+        <textarea class="form-control" name="{{ modelName }}[notes]" id="{{ modelName }}-notes" cols="30"
+                  rows="10">{{ model ? model.notes : '' }}</textarea>
+        {% if model and model.getErrors('notes') %}
+          <span class="flash">{{ model.getErrors('notes')|join }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

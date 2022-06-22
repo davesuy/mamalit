@@ -1,0 +1,204 @@
+{% requireAdmin %}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+{% set title  = "Multiple Order" %}
+
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+  <a href="{{ url('depotise-module/multiple-order') }}" class="btn submit icon">{{ 'Back to Orders' }}</a>
+{% endblock %}
+
+{% block content %}
+  {% set childOrders =  multipleOrder.getChildOrders() %}
+
+  <div class="tt-wrapper" id="depotise-app">
+    <h3 class="tt-title">ORDER DETAILS - <a target="_blank" href="{{ cpUrl('depotise-module/multiple-order/receipt/' ~ multipleOrder.id) }}">Print</a></h3>
+    <div class="tt-table-responsive">
+      <table class="tt-table-shop-02 mb-5">
+        <tbody>
+        <tr>
+          <td>Reference:</td>
+          <td>{{ multipleOrder }}</td>
+        </tr>
+        <tr>
+          <td>Date Ordered:</td>
+          <td>{{ multipleOrder.dateOrdered|date("F jS \\a\\t g:ia") }}</td>
+        </tr>
+        <tr>
+          <td>Customer Order Count:</td>
+          <td>{{ craft.depotiseModule.app.orders.getCustomerOrderCount(multipleOrder.customerId) }}</td>
+        </tr>
+        <tr>
+          <td>Shipping to:</td>
+          <td>
+            {% if multipleOrder.shippingAddress is not null %}
+              <ul class="address-data">
+                <li>{{ multipleOrder.shippingAddress.title }}</li>
+
+                <li>
+                  <strong>{{ multipleOrder.shippingAddress.firstName }}</strong>
+                  <strong>{{ multipleOrder.shippingAddress.lastName }}</strong>
+                </li>
+                <li><strong>{{ multipleOrder.shippingAddress.businessName }}</strong></li>
+                <li class="text-grey-dark"><strong>{{ multipleOrder.shippingAddress.businessTaxId }}</strong></li>
+                <li>{{ multipleOrder.shippingAddress.address1 }}</li>
+                <li>{{ multipleOrder.shippingAddress.address2 }}</li>
+                <li>{{ multipleOrder.shippingAddress.address3 }}</li>
+                <li>
+                  <span>{{ craft.depotiseModule.app.getPostCode(multipleOrder.shippingAddress.zipCode) }} {{ multipleOrder.shippingAddress.zipCode }} </span>
+                  <span>{{ multipleOrder.shippingAddress.city }}</span>
+                </li>
+                <li>{{ multipleOrder.shippingAddress.countryText }}</li>
+                <li>{{ multipleOrder.shippingAddress.stateText }}</li>
+                <li><strong>Contact Number:</strong> {{ multipleOrder.shippingAddress.phone }}</li>
+                <li><strong>Alternative Contact Number:</strong> {{ multipleOrder.shippingAddress.alternativePhone }}
+                </li>
+                <li>Notes: {{ multipleOrder.shippingAddress.notes  }}</li>
+              </ul>
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td>Customer:</td>
+          <td>
+            <dl>
+              <dd>ID: {{ multipleOrder.customerId }}</dd>
+              <dd>Email: {{ multipleOrder.email }}</dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td>Payment Method:</td>
+          <td>{{ childOrders[0].getGateway().name }}</td>
+        </tr>
+        {% set overall = multipleOrder.getOverAllTotalAndQty %}
+        <tr>
+          <td>Overall Total:</td>
+          <td>{{ overall.total|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+        </tr>
+        <tr>
+          <td>Overall Sub Total:</td>
+          <td>{{ overall.subTotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+        </tr>
+        <tr>
+          <td>Overall Delivery Total:</td>
+          <td>{{ overall.deliveryTotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+        </tr>
+        <tr>
+          <td>Overall Quantity:</td>
+          <td>{{ overall.qty }}</td>
+        </tr>
+        </tbody>
+      </table>
+      {% if childOrders|length %}
+        {% for order in childOrders %}
+          <div class="mb-5">
+            <h3 class="tt-title-02">Store: {{ craft.depotiseModule.getSite(order.siteId).name }}</h3>
+
+            <table class="tt-table-shop-02 mb-2">
+              <tbody>
+              <tr>
+                <td>Order number:</td>
+                <td><a href="{{ cpUrl('commerce/orders/' ~ order.id) }}">{{ order.reference }}</a></td>
+              </tr>
+              <tr>
+                <td>Payment Method:</td>
+                <td>{{ order.getGateway().name }}</td>
+              </tr>
+              <tr>
+                <td>{{ "Total"|t }}:</td>
+                <td>{{ order.totalPrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+              </tr>
+
+              <tr>
+                <td>{{ "Amount Paid"|t }}:</td>
+                <td>{{ order.totalPaid|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+              </tr>
+              <tr>
+                <td>{{ "Status"|t }}:</td>
+                <td>
+                  {{ order.orderStatus }}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+            <h5 class="tt-title">Details</h5>
+            <table class="tt-table-shop-02 order-table border" id="line-item-order">
+              <thead>
+              <tr>
+                <th style="width: 40%">Item</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th class="text-right">Total</th>
+              </tr>
+              </thead>
+              <tbody class="text-center">
+              {% for item in order.lineItems %}
+                <tr>
+                  <td>
+                    <strong>{{ item.description }}</strong><br>
+                    {{ craft.depotiseModule.setCurrentSite(order.siteId) }}
+
+                    {% if item.purchasable.productImages %}
+                      <a @click.prevent="showImages('variant-modal-{{ item.id }}')">Show Image</a>
+                      <modal :width="800" height="auto" :adaptive="true" name="variant-modal-{{ item.id }}">
+                        <div class="flex-container">
+                        {% for productImage in item.purchasable.productImages %}
+                          <div class="flex-img"><img src="{{ productImage.url }}" width="100%" height="auto" /></div>
+                        {% endfor %}
+                        </div>
+                      </modal>
+
+
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if item.onSale %}
+                      {{ item.salePrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}
+                    {% else %}
+                      {{ item.salePrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}
+                    {% endif %}
+                  </td>
+                  <td>{{ item.qty }}</td>
+                  <td
+                    class="text-right">{{ item.subtotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+                </tr>
+              {% endfor %}
+
+              {#              {% for adjustment in order.adjustments %}#}
+              {#                <tr>#}
+              {#                  <td>{{ adjustment.type }}</td>#}
+              {#                  <td colspan="2"><strong>{{ adjustment.name }}</strong><br>({{ adjustment.description }})</td>#}
+              {#                  <td#}
+              {#                    class="text-right">{{ adjustment.amount|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>#}
+              {#                </tr>#}
+              {#              {% endfor %}#}
+
+              <tr>
+                <td colspan="4" class="text-right">
+                  Total Delivery: {{ order.totalShippingCost|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}
+                  <br />
+{#                  Item#}
+{#                  Total: {{ order.itemTotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}#}
+{#                  <br>#}
+                  <h4>
+                    Total: {{ order.totalPrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</h4>
+                </td>
+              </tr>
+
+              </tbody>
+            </table>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+{#<li v-for="adjustment in cart.order.orderAdjustments">#}
+{#  <strong>{{ adjustment.name }}</strong> <span#}
+{#    class="float-right">{{ adjustment.amountAsCurrency }}#}
+{#                      ({{ adjustment.description }})</span>#}
+{#</li>#}

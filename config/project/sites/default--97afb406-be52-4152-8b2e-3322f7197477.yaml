@@ -1,0 +1,9 @@
+baseUrl: 'https://www.mamalit.com'
+enabled: true
+handle: default
+hasUrls: true
+language: en-PH
+name: Mamalit
+primary: true
+siteGroup: 24b75201-290a-4426-a670-88ee49d5d4c1
+sortOrder: 1

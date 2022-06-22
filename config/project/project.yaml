@@ -1,0 +1,223 @@
+dateModified: 1623147913
+depotiseSocial:
+  allowEmailMatch: true
+  autoFillProfile: true
+  defaultGroup: null
+  enableCpLogin: false
+  enableSocialLogin: true
+  enableSocialRegistration: true
+  enabledLoginProviders:
+    - facebook
+  loginProviders:
+    facebook:
+      oauth:
+        options:
+          clientId: '2898454643565530'
+          clientSecret: 4946aa29107d55c34a9601039321a540
+email:
+  fromEmail: admin@mamalit.com
+  fromName: 'Admin Mamalit'
+  replyToEmail: null
+  template: ''
+  transportSettings:
+    encryptionMethod: ''
+    host: smtp-pulse.com
+    password: rnQfbXC6d2kp6
+    port: '587'
+    timeout: '10'
+    useAuthentication: '1'
+    username: chosen_me99@yahoo.com
+  transportType: craft\mail\transportadapters\Smtp
+plugins:
+  aws-s3:
+    edition: standard
+    enabled: true
+    schemaVersion: '1.2'
+  commerce:
+    edition: pro
+    enabled: true
+    schemaVersion: 3.2.3
+    settings:
+      activeCartDuration: 3600
+      allowEmptyCartOnCheckout: false
+      autoSetNewCartAddresses: false
+      cartVariable: cart
+      defaultView: commerce/orders
+      dimensionUnits: mm
+      emailSenderAddress: ''
+      emailSenderAddressPlaceholder: null
+      emailSenderName: ''
+      emailSenderNamePlaceholder: null
+      freeOrderPaymentStrategy: complete
+      gatewayPostRedirectTemplate: ''
+      loadCartRedirectUrl: null
+      minimumTotalPriceStrategy: default
+      orderPdfFilenameFormat: 'Order-{number}'
+      orderPdfPath: shop/special/receipt
+      orderReferenceFormat: '{{number[:7]}}'
+      paymentCurrency: null
+      pdfAllowRemoteImages: false
+      pdfPaperOrientation: portrait
+      pdfPaperSize: letter
+      purgeInactiveCarts: true
+      purgeInactiveCartsDuration: 7776000
+      requireBillingAddressAtCheckout: false
+      requireShippingAddressAtCheckout: false
+      requireShippingMethodSelectionAtCheckout: false
+      showCustomerInfoTab: true
+      updateBillingDetailsUrl: ''
+      updateCartSearchIndexes: true
+      useBillingAddressForTax: false
+      validateBusinessTaxIdAsVatId: false
+      validateCartCustomFieldsOnSubmission: false
+      weightUnits: kg
+  contact-form:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+    settings:
+      allowAttachments: ''
+      prependSender: 'On behalf of Mamalit Admin'
+      prependSubject: 'New message from Mamalit'
+      successFlashMessage: 'Your message has been sent.'
+      toEmail: admin@depotise.com
+  craft-recaptcha-3:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+    settings:
+      secretKey: 6LfNNjoaAAAAALCZnWh8AUNVrHxkK9yjuKtOP5Nq
+      siteKey: 6LfNNjoaAAAAAFYmaN7yZ8io3lWny3ao3A02rB00
+  knock-knock:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.1.1
+    settings:
+      allowIps: ''
+      checkInvalidLogins: ''
+      denyIps: ''
+      enabled: ''
+      forcedRedirect: null
+      invalidLoginWindowDuration: '3600'
+      loginPath: ''
+      maxInvalidLogins: '10'
+      password: mamalit
+      protectedUrls: ''
+      siteSettings:
+        __assoc__:
+          -
+            - default
+            -
+              __assoc__:
+                -
+                  - enabled
+                  - ''
+                -
+                  - password
+                  - ''
+                -
+                  - template
+                  - ''
+          -
+            - lolongsStore
+            -
+              __assoc__:
+                -
+                  - enabled
+                  - ''
+                -
+                  - password
+                  - ''
+                -
+                  - template
+                  - ''
+          -
+            - roosekiePharmacy
+            -
+              __assoc__:
+                -
+                  - enabled
+                  - ''
+                -
+                  - password
+                  - ''
+                -
+                  - template
+                  - ''
+          -
+            - fAndLMart
+            -
+              __assoc__:
+                -
+                  - enabled
+                  - ''
+                -
+                  - password
+                  - ''
+                -
+                  - template
+                  - ''
+          -
+            - enzosMeatshop
+            -
+              __assoc__:
+                -
+                  - enabled
+                  - ''
+                -
+                  - password
+                  - ''
+                -
+                  - template
+                  - ''
+          -
+            - larios
+            -
+              __assoc__:
+                -
+                  - enabled
+                  - ''
+                -
+                  - password
+                  - ''
+                -
+                  - template
+                  - ''
+          -
+            - koopMeatFactory
+            -
+              __assoc__:
+                -
+                  - enabled
+                  - ''
+                -
+                  - password
+                  - ''
+                -
+                  - template
+                  - ''
+      template: ask
+      unprotectedUrls: "/vue-pagination\r\n/super-filter/fields\r\n/super-filter/filter"
+      useRemoteIp: ''
+  redactor:
+    edition: standard
+    enabled: true
+    schemaVersion: 2.3.0
+  sendgrid:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+  super-filter:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+  super-payment-adjuster:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+system:
+  edition: pro
+  live: true
+  name: Mamalit
+  schemaVersion: 3.5.13
+  timeZone: Asia/Singapore

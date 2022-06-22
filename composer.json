@@ -1,0 +1,62 @@
+{
+  "require": {
+    "clarknelson/craft-recaptcha-3": "^1.1",
+    "codeception/codeception": "^4.1",
+    "codeception/module-asserts": "^1.1",
+    "codeception/module-phpbrowser": "^1.0",
+    "craftcms/aws-s3": "1.2.7",
+    "craftcms/cms": "3.5.6",
+    "craftcms/commerce": "3.2.3",
+    "craftcms/contact-form": "^2.2",
+    "craftcms/fix-fks": "1.0.2.1",
+    "craftcms/redactor": "2.6.1",
+    "dompdf/dompdf": "^0.8.3",
+    "guzzlehttp/guzzle": "^6.5",
+    "league/oauth1-client": "^1.7",
+    "league/oauth2-client": "^2.4",
+    "league/oauth2-facebook": "^2.0",
+    "league/oauth2-google": "^3.0",
+    "mmikkel/cache-flag": "1.0.3",
+    "pdaleramirez/super-filter": "1.3.0",
+    "pdaleramirez/super-payment-adjuster": "^1.0",
+    "putyourlightson/craft-sendgrid": "1.2.0",
+    "venveo/craft-bulkedit": "2.0.4",
+    "verbb/knock-knock": "^1.2",
+    "vlucas/phpdotenv": "^3.4.0"
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "platform": {
+      "php": "7.0"
+    }
+  },
+  "scripts": {
+    "post-root-package-install": [
+      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+    ]
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "local/craftcms/cms"
+    },
+    {
+      "type": "path",
+      "url": "local/craftcms/commerce"
+    },
+    {
+      "type": "path",
+      "url": "local/pdaleramirez/super-filter"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "modules\\depotisemodule\\": "modules/depotisemodule/src/",
+      "modules\\social\\": "modules/social/src/"
+    }
+  },
+  "require-dev": {
+    "codeception/module-yii2": "^1.1"
+  }
+}

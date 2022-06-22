@@ -1,0 +1,50 @@
+fieldLayouts:
+  c2be9235-7820-4721-85d7-1994b35d7ff3:
+    tabs:
+      -
+        elements:
+          -
+            autocapitalize: true
+            autocomplete: false
+            autocorrect: true
+            class: null
+            disabled: false
+            id: null
+            instructions: null
+            label: null
+            max: null
+            min: null
+            name: null
+            orientation: null
+            placeholder: null
+            readonly: false
+            requirable: false
+            required: false
+            size: null
+            step: null
+            tip: null
+            title: null
+            type: craft\fieldlayoutelements\TitleField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+handle: palit
+hasUrls: true
+name: Palit
+settings:
+  autoFocalPoint: ''
+  bucket: palit
+  bucketSelectionMode: choose
+  cfDistributionId: ''
+  cfPrefix: ''
+  expires: ''
+  keyId: $AWS_ACCESS_KEY_ID
+  makeUploadsPublic: '1'
+  region: ap-southeast-1
+  secret: $AWS_SECRET_KEY
+  storageClass: ''
+  subfolder: ''
+sortOrder: 1
+type: craft\awss3\Volume
+url: 'https://s3.ap-southeast-1.amazonaws.com/palit/'

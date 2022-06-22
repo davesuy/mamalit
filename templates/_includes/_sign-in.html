@@ -1,0 +1,40 @@
+
+  <h2 class="tt-title">LOGIN</h2>
+  If you have an account with us, please log in.
+
+  {% if errorMessage is defined %}
+    <h3 class="text-danger">{{ errorMessage }}</h3>
+  {% endif %}
+    <form method="post" accept-charset="UTF-8">
+      {{ csrfInput() }}
+      <input type="hidden" name="action" value="users/login">
+      {{ redirectInput(redirect) }}
+
+      <div class="form-group">
+        <label for="loginName">Email</label>
+        <input id="loginName" class="form-control" type="text" name="loginName" placeholder="email@site.com"
+               value="{{ cart.email }}">
+      </div>
+
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" class="form-control" type="password" name="password">
+      </div>
+
+      <div class="checkbox-group">
+        <input id="rememberMe" type="checkbox" class="form-control" name="rememberMe" v-model="rememberMe">
+        <label for="rememberMe">
+          <span class="check"></span>
+          <span class="box"></span>
+          Remember me</label>
+      </div>
+
+      <div class="form-group">
+        <input type="submit" value="Login" class="btn btn-border"/>
+      </div>
+    </form>
+
+    <p><a href="{{ url('forgotpassword') }}">Forgot your password?</a></p>
+
+
+

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ set.siteTitle is not null ?  set.siteTitle : ''  }}</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="{{ set.body is not null ? set.body|striptags : '' }}">
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="{{ craft.depotiseModule.mix('/dist/app.css') }}">
+</head>
+{% if extraHead is defined %}
+  {{ extraHead }}
+{% endif %}
+
+<body>
+
+<div class="bg-white">
+  <div id="main" class="container mx-auto p-6">
+{% block main %}
+  <h1>Default Content</h1>
+  <p>You should not see this.</p>
+{% endblock %}
+  </div>
+</div>
+</body>
+</html>

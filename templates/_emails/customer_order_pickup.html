@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Your order has shipped - {{ order.reference }}</title>
+    <!--
+    The style block is collapsed on page load to save you some scrolling.
+    Postmark automatically inlines all CSS properties for maximum email client
+    compatibility. You can just update styles here, and Postmark does the rest.
+    -->
+    <style type="text/css" rel="stylesheet" media="all">
+    /* Base ------------------------------ */
+
+    {% include '_emails/styles.css' %}
+    </style>
+  </head>
+  <body>
+    <span class="preheader">We are pleased to advise your order is ready for pickup, your order reference is {{order.reference}}. </span>
+    <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center">
+
+          <table class="email-content" width="100%" cellpadding="0" cellspacing="0">
+              {% include '_emails/include/header.html' with { heading: "Order Shipped" } %}
+            <!-- Email Body -->
+            <tr>
+              <td class="email-body" width="100%" cellpadding="0" cellspacing="0">
+                <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0">
+                  <!-- Body content -->
+                  <tr>
+                    <td class="content-cell">
+                      <h1>Hi {{order.billingAddress.firstName}},</h1>
+                      <p>We are please to advise that your order is now ready for pickup in our Bayswater store.</p>
+
+                      <p>This purchase will appear as “Mamalit WA" on your credit card statement.</p>
+
+
+                      <p><strong>Order Status:</strong>{{order.orderStatus.name}}<br>
+                        <strong>Order: Reference</strong>: {{order.reference}}<br>
+                        <strong>Order Date:</strong> {{ order.dateOrdered|date('l jS F Y') }}
+                    </p>
+                      <!-- Call to action -->
+
+
+                      <table class="cta dashed" align="center" width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td align="center">
+                            <!--<h1 class="cta_heading">Heading</h1>
+                            <p class="cta_body">Body</p>-->
+                            <!-- Border based button
+                       https://litmus.com/blog/a-guide-to-bulletproof-buttons-in-email-design -->
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td align="center">
+                                  <table border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                      <td>
+
+                                        <h2>Pickup Location</h2>
+                                        <p><strong>
+                                            Mamalit<br>
+                                            204 Collier Rd<br>
+                                            BAYSWATER WA 6053<br><br>
+                                            Tel: <a href="tel:+61892727611">(08) 92727611</a>
+
+                                        </strong></p>
+                                        <p><a href="https://goo.gl/maps/kadinLyhn8Xb2yuS6">Google Maps</a></p>
+
+                                        <a href="{{siteUrl}}customer/order?number={{order.number}}" class="button button--red" target="_blank">View your order online</a>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+
+                              {% include '_emails/include/orderitems.html' %}
+
+                          </td>
+                        </tr>
+                      </table>
+                      <p>If you have any questions about this order, simply reply to this email or <a href="{{siteUrl}}contact-us">reach out to our team</a> for help.</p>
+                      <p>Cheers,
+                        <br>The Mamalit Team</p>
+                      {#
+                      <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td align="center">
+                            <!-- Border based button
+                       https://litmus.com/blog/a-guide-to-bulletproof-buttons-in-email-design -->
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td align="center">
+                                  <table border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                      <td>
+                                        <a href="{{siteUrl}}customer/order?number={{order.number}}" class="button button--red" target="_blank">Download as PDF</a>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                      #}
+
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {% include '_emails/include/footer.html' %}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

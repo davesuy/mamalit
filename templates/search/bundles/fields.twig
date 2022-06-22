@@ -1,0 +1,34 @@
+<form method="post" @submit.prevent="submitFilter">
+    {% for field in fields %}
+        <div class="form-group my-3">
+          {% if field.object.handle is not same as('title') %}
+
+          {% endif %}
+            <div class="input">
+
+
+                {% if field.object.handle == 'title' %}
+                  <div class="row">
+                    <div class="col-4">
+                      <div class="row">
+                        <div class="col-9">
+                          <auto-suggest placeholder="Search Bundles" action-url="{{ actionUrl('depotise-module/product/get-bundle-suggest') }}"  v-model="suggest" @selected="onSuggest"></auto-suggest>
+                        </div>
+                        <div class="col-3">
+                          <button type="submit" @keyup.enter="submitFilter" @click="submitFilter"  class="btn px-3">Search</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-8">
+                    </div>
+                  </div>
+                {% else %}
+                  {{ field.html()|raw }}
+                {% endif %}
+
+            </div>
+        </div>
+    {% endfor %}
+
+    <button v-if="categories.length > 0" @click="clearFilter" class="btn-primary btn-sm" type="button" name="reset" value="1">Clear</button>
+</form>

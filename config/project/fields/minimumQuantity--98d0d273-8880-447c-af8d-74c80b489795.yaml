@@ -1,0 +1,18 @@
+contentColumnType: text
+fieldGroup: bdf930d1-a02d-4fe0-a691-afde504fc428
+handle: minimumQuantity
+instructions: ''
+name: 'Minimum Quantity'
+searchable: false
+settings:
+  byteLimit: null
+  charLimit: null
+  code: ''
+  columnType: null
+  initialRows: '4'
+  multiline: ''
+  placeholder: ''
+  uiMode: normal
+translationKeyFormat: null
+translationMethod: none
+type: craft\fields\PlainText

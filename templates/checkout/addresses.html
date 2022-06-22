@@ -1,0 +1,102 @@
+{% extends '_layouts/checkout' %}
+
+{% set addresses = craft.commerce.customers.customer.addresses %}
+{% if currentUser is null %}
+  {% redirect "/checkout" %}
+{% endif %}
+{% block content %}
+    {# UI when at least one address exists #}
+
+    <div class="row">
+        <div class="col-sm-12 col-md-8">
+            <form method="post" ref="addressForm" id="addressForm">
+
+                <h1>Where should we send your order?</h1>
+
+
+                <input type="hidden" name="action" value="depotise-module/cart/update-address">
+                {{ redirectInput('/checkout/shipping') }}
+
+                {{ csrfInput() }}
+
+{#                {% if not cart.email %}#}
+{#                    <label for="email">Email</label>#}
+{#                    <input id="email" class="w-full" type="text" value="{{ cart.email }}" name="email"#}
+{#                           placeholder="email@site.com"/>#}
+
+{#                    <span class="flash">{{ cart.getErrors('email')|join }}</span><br>#}
+{#                {% endif %}#}
+
+                {% include '_includes/addresses/fieldset' with {
+                    title: "Delivery Address"|t,
+                    class: 'ShippingAddress',
+                    name: 'shippingAddress'
+                } %}
+
+                <input type="hidden" name="billingAddressSameAsShipping" value="1">
+{#<input type="hidden" name="shippingAddressSameAsBilling" value="0">#}
+
+{#                <label for="makePrimaryShippingAddress"><input id="makePrimaryShippingAddress" name="makePrimaryShippingAddress" type="checkbox"/><span class="label-body">Make this the primary shipping address</span></label>#}
+
+{#<label for="shippingAddressSameAsBilling"><input id="shippingAddressSameAsBilling" name="shippingAddressSameAsBilling" type="checkbox" checked="checked"/><span class="label-body">Use same address for#}
+
+{#shipping</span></label>#}
+
+
+{#                {% include '_includes/addresses/fieldset' with {#}
+{#                    title: "Billing Address"|t,#}
+{#                    class: 'BillingAddress hidden',#}
+{#                    name: 'billingAddress'#}
+{#                } %}#}
+
+{#                <label for="makePrimaryBillingAddress"><input id="makePrimaryBillingAddress" name="makePrimaryBillingAddress" type="checkbox"/><span class="label-body">Make this the primary billing address</span></label>#}
+
+
+                <input @click.prevent="submitAddress" type="submit" class="btn btn-lg" value="Confirm addresses">
+
+            </form>
+        </div>
+
+        <div class="col-sm-12 col-md-4">
+          <order-review></order-review>
+{#            {% include "_includes/order-review" with {  } %}#}
+        </div>
+    </div>
+
+{#    {% js %}#}
+{#    var $fieldsets = $('.address-fieldset');#}
+
+{#    $fieldsets.each(function () {#}
+
+{#        var $addressFieldset = $(this);#}
+
+{#        $('.address-select', $addressFieldset).each(function () {#}
+
+{#            this.$element = $(this);#}
+{#            this.$radio = $('.radio input', this.$element);#}
+{#            this.$body = $('.body', this.$element);#}
+
+{#            this.$radio.change($.proxy(function () {#}
+{#                $('.body', $addressFieldset).addClass('hidden');#}
+{#                this.$body.removeClass('hidden');#}
+{#            }, this));#}
+
+{#            if (this.$radio.is(':checked')) {#}
+{#            this.$body.removeClass('hidden');#}
+{#            }#}
+{#        });#}
+
+{#    });#}
+
+{#    $("#billingAddressSameAsShipping").change(function (e) {#}
+{#        $('.address-fieldset.BillingAddress').toggleClass('hidden');#}
+{#    });#}
+
+{#    {% if (cart.billingAddressId and cart.billingAddress and cart.billingAddress.hasErrors()) or (cart.billingAddressId != cart.shippingAddressId) %}#}
+{#        $("#billingAddressSameAsShipping").click();#}
+{#    {% endif %}#}
+{#    {% endjs %}#}
+  <b-modal id="choose-shipping" size="xl">
+    <h1>Choose a delivery address</h1>
+  </b-modal>
+{% endblock %}

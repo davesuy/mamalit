@@ -1,0 +1,105 @@
+{% extends '_layouts/main' %}
+{% block main %}
+  <fixed-header :threshold="100">
+    <div class="row search-section">
+      <div class="col-sm-12">
+        <div class="tt-collapse-content">
+            <div class="form-group mx-auto width-90">
+              <div class="row">
+                <div class="col-9">
+                  <auto-suggest v-model="suggest" @selected="onSuggest"></auto-suggest>
+                </div>
+                <div class="col-3">
+                  <button type="submit" @keyup.enter="submitFilter" @click="submitFilter"  class="btn px-3">Search</button>
+                </div>
+              </div>
+            </div>
+
+        </div>
+        {% include "_includes/current-category" %}
+        {% if craft.app.sites.currentSite.id is not same as(craft.app.sites.primarySite.id) %}
+          <h4 class="text-center">You shopping in {{ craft.app.sites.currentSite.name }}</h4>
+          <h4 class="text-center"><i class="icon-e-30"></i> <a href="/products">Go Back to All Stores</a></h4>
+        {% endif %}
+      </div>
+    </div>
+  </fixed-header>
+  <hr />
+  <div class="row mb-2" v-if="getSelectedCategoryName !== ''">
+    <div class="col-sm-12 text-center">
+      You are searching for products in ${ getSelectedCategoryName } category. <button class="btn-secondary btn-sm" @click.prevent="clearFilter">Show All Categories</button>
+    </div>
+  </div>
+    {% set categorySlug = craft.request.getSegment(-1) %}
+    {% set currentCategory = craft.categories.where({'slug': categorySlug}).one() %}
+    {% set currentObj = currentCategory ? {
+      filter: {
+        productCategories: [currentCategory.id]
+      }
+    } : {} %}
+    {{ craft.superFilter.setup('siteProducts', currentObj|merge({attributes: [
+      'title', 'siteId', 'defaultVariantId', 'slug',
+      'defaultPrice', 'defaultSku']})) }}
+    <div class="row">
+      <div :class="{'column-open ps-theme-default ps-active-y': filterToggle}" class="col-md-4 col-lg-3 col-xl-3 leftColumn aside" id="js-leftColumn-aside">
+        <div class="tt-btn-col-close" @click="filterToggle = !filterToggle">
+          <a href="#">Close</a>
+        </div>
+        <div class="tt-collapse open tt-filter-detach-option">
+          <div class="tt-collapse-content">
+            <div class="filters-mobile">
+              <div class="filters-row-select">
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="vld-parent">
+          <loading :height="30" :width="30" :active.sync="loadingFields" :is-full-page="false"
+          ></loading>
+          <div class="tt-collapse open">
+            {% if currentCategory is empty %}
+              <h3 class="tt-collapse-title"><a href="/products">PRODUCT CATEGORIES</a></h3>
+            {% endif %}
+              <div class="tt-collapse-content">
+                {{ craft.superFilter.displaySearchFields() }}
+              </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-9 col-xl-9">
+        <div class="content-indent container-fluid-custom-mobile-padding-02">
+          <div  v-if="categories.length > 0" class="tt-filters-options" id="js-tt-filters-options">
+            <div
+                 @click="filterToggle = !filterToggle" class="tt-btn-toggle">
+              <a href="#">FILTER</a>
+            </div>
+            {{ craft.superFilter.displaySortOptions() }}
+          </div>
+          {{ craft.superFilter.items() }}
+
+          {{ craft.superFilter.getPaginateLinks() }}
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}
+{% css %}
+  .vue-fixed-header--isFixed.search-section {
+    padding-top: 10px;
+    position: fixed;
+    z-index: 19;
+    width: 100%;
+    background: #fff;
+    top:0
+  }
+
+  @media(max-width:767px) {
+  .vue-fixed-header--isFixed.search-section {
+    top: 50px;
+    }
+  }
+{% endcss %}

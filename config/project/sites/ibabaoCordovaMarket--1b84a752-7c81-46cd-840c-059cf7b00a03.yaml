@@ -1,0 +1,9 @@
+baseUrl: '@web/ibabao-cordova-market'
+enabled: true
+handle: ibabaoCordovaMarket
+hasUrls: true
+language: en-PH
+name: 'Pilipog Wet Market'
+primary: false
+siteGroup: 24b75201-290a-4426-a670-88ee49d5d4c1
+sortOrder: 16

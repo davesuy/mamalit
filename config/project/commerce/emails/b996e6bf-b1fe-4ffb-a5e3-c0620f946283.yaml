@@ -1,0 +1,10 @@
+bcc: null
+cc: null
+enabled: false
+name: 'New Order'
+plainTextTemplatePath: ''
+recipientType: custom
+replyTo: null
+subject: 'New website order received'
+templatePath: /_emails/admin_order_received.html
+to: mamalit.info@gmail.com

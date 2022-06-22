@@ -1,0 +1,562 @@
+<?php
+
+namespace modules\depotisemodule\elements;
+
+use craft\base\Element;
+use craft\commerce\elements\Order;
+use craft\commerce\Plugin;
+use craft\elements\db\ElementQueryInterface;
+use craft\helpers\UrlHelper;
+use craft\models\Site;
+use modules\depotisemodule\DepotiseModule;
+use modules\depotisemodule\elements\actions\DeleteMultipleOrder;
+use modules\depotisemodule\elements\db\MultipleOrderQuery;
+use modules\depotisemodule\records\MultipleOrder as MultipleOrderRecord;
+use yii\base\Exception;
+use Craft;
+use craft\elements\actions\Delete;
+use yii\base\InvalidConfigException;
+use craft\commerce\models\Address;
+use craft\commerce\models\Customer;
+use craft\elements\User;
+
+
+class MultipleOrder extends Element
+{
+	public $number;
+	public $id;
+	public $customerId;
+	public $isCompleted;
+	public $shippingAddress;
+	public $shippingAddressId;
+	public $billingAddressId;
+	public $total;
+	public $email;
+	public $currency = 'PHP';
+	public $reference;
+	public $couponCode;
+	public $dateOrdered;
+	public $datePaid;
+	public $dateAuthorized;
+	public $gatewayId;
+	public $lastIp;
+	public $message;
+	public $returnUrl;
+	public $cancelUrl;
+	public $orderStatusId;
+	public $orderLanguage;
+	public $origin;
+	public $makePrimaryShippingAddress;
+	public $makePrimaryBillingAddress;
+	public $shippingSameAsBilling;
+	public $billingSameAsShipping;
+	public $estimatedBillingAddressId;
+	public $estimatedShippingAddressId;
+	public $estimatedBillingSameAsShipping;
+	public $shippingMethodHandle;
+	public $registerUserOnOrderComplete;
+	public $paymentSourceId;
+	public $storedTotalPrice;
+	public $storedTotalPaid;
+	public $storedItemTotal;
+	public $storedTotalShippingCost;
+	public $storedTotalDiscount;
+	public $storedTotalTax;
+	public $storedTotalTaxIncluded;
+	public $paymentCurrency;
+	public $hasPromo;
+	private $_billingAddress;
+	private $_estimatedShippingAddress;
+	private $_estimatedBillingAddress;
+
+	public function init()
+	{
+		// Set default addresses on the order
+		if (!$this->isCompleted) {
+			$hasPrimaryShippingAddress = !$this->shippingAddressId && $this->getCustomer() && $this->getCustomer()->primaryShippingAddressId;
+
+			if ($hasPrimaryShippingAddress && ($address = Plugin::getInstance()->getAddresses()->getAddressById($this->getCustomer()->primaryShippingAddressId)) !== null) {
+
+				$this->setShippingAddress($address);
+			}
+		} elseif ($this->shippingAddressId !== null) {
+			if ($address = Plugin::getInstance()->getAddresses()->getAddressById($this->shippingAddressId)) {
+				$this->setShippingAddress($address);
+			}
+		}
+
+		return parent::init();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public static function displayName(): string
+	{
+		return Craft::t('depotise-module', 'Multiple Order');
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function getIsEditable(): bool
+	{
+		return false;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public static function hasTitles(): bool
+	{
+		return false;
+	}
+
+	public static function hasContent(): bool
+	{
+		return false;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected static function defineSources(string $context = null): array
+	{
+		$sources = [
+			[
+				'key' => '*',
+				'label' => Craft::t('depotise-module', 'All Multiple Orders'),
+				'defaultSort' => ['dateOrdered', 'desc']
+			]
+		];
+
+		return $sources;
+	}
+
+	protected static function defineTableAttributes(): array
+	{
+		$attributes = [
+			'uid' => ['label' => Craft::t('depotise-module', 'Reference')],
+			'dateOrdered' => ['label' => Craft::t('depotise-module', 'Date Ordered')]
+		];
+
+		return $attributes;
+	}
+
+	public function getCpEditUrl()
+	{
+		return UrlHelper::cpUrl(
+			'depotise-module/multiple-order/edit/'.$this->id
+		);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected static function defineSortOptions(): array
+	{
+		$attributes = [
+			'multiple_orders.dateOrdered' => Craft::t('depotise-module', 'Date Ordered')
+		];
+
+		return $attributes;
+	}
+
+	/**
+	 * @return ElementQueryInterface|MultipleOrderQuery
+	 */
+	public static function find(): ElementQueryInterface
+	{
+		return new MultipleOrderQuery(static::class);
+	}
+
+	public function afterSave(bool $isNew)
+	{
+		// Get the entry record
+		if (!$isNew) {
+			$record = MultipleOrderRecord::findOne($this->id);
+
+			if (!$record) {
+				throw new Exception('Invalid setup ID: '.$this->id);
+			}
+		} else {
+			$record = new MultipleOrderRecord();
+			$record->id = $this->id;
+		}
+
+		$record->number      = $this->number;
+		$record->customerId  = $this->customerId;
+		$record->isCompleted = $this->isCompleted;
+		$record->email       = $this->email;
+		$record->shippingAddressId = $this->shippingAddressId;
+		$record->billingAddressId = $this->billingAddressId;
+		$record->dateCreated = $this->dateCreated;
+		$record->dateUpdated = $this->dateUpdated;
+		$record->dateOrdered = $this->dateOrdered;
+		$record->hasPromo = $this->hasPromo;
+
+		$record->save(false);
+
+		// Update the entry's descendants, who may be using this entry's URI in their own URIs
+		Craft::$app->getElements()->updateElementSlugAndUri($this);
+
+		parent::afterSave($isNew); // TODO: Change the autogenerated stub
+	}
+
+	/**
+	 * @param bool $completed
+	 * @return array|Order[]
+	 */
+	public function getChildOrders(bool $completed = true)
+	{
+		$record = MultipleOrderRecord::find()->where(['id' => $this->id])->one();
+
+		$isCompleted = ($completed === true) ? 1 : 0;
+
+		$orders = [];
+
+		$recordOrders = $record->getOrders()
+			->andWhere(['dateDeleted' => null])
+			->where(['isCompleted' => $isCompleted])->all();
+
+		if (count($recordOrders) > 0) {
+			foreach ($recordOrders as $recordOrder) {
+				$element = Order::find()->where(['commerce_orders.id' => $recordOrder->id])->site('*')->one();
+				if ($element !== null) {
+					$orders[] = $element;
+				}
+			}
+		}
+
+
+		return $orders;
+	}
+
+	public function getShippingAddress()
+	{
+		if (null === $this->shippingAddress && $this->shippingAddressId) {
+			$this->shippingAddress = Plugin::getInstance()->getAddresses()->getAddressById($this->shippingAddressId);
+		}
+
+		return $this->shippingAddress;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected static function defineActions(string $source = null): array
+	{
+		$actions = [];
+
+		// Delete
+		$actions[] = Craft::$app->getElements()->createAction([
+			'type' => DeleteMultipleOrder::class,
+			'confirmationMessage' => Craft::t('depotise-module', 'Are you sure you want to delete the selected Multiple Order?'),
+			'successMessage' => Craft::t('depotise-module', 'Multiple Order.'),
+		]);
+
+		return $actions;
+	}
+
+
+	public function getRecord()
+	{
+		$record = new MultipleOrderRecord();
+
+		$record->setAttributes($this->getAttributes(), false);
+
+		return $record;
+	}
+
+	/**
+	 * @return array
+	 * @throws \craft\errors\SiteNotFoundException
+	 */
+	public function getActiveOrders($lineItemsOnly = false)
+	{
+		$record = $this->getRecord();
+
+		/**
+		 * @var \craft\commerce\records\Order[] $orderRecords
+		 */
+		$orderRecords = $record->getActiveOrders();
+
+		$activeOrders = [];
+
+		if (count($orderRecords) > 0) {
+			$currentSiteId = Craft::$app->sites->getCurrentSite()->id;
+
+			foreach ($orderRecords as $key => $orderRecord) {
+
+				$siteIds = Craft::$app->elements->getEnabledSiteIdsForElement($orderRecord->id);
+				$siteId = $siteIds[0];
+				/**
+				 * @var Order $order
+				 */
+				$order = DepotiseModule::$app->orders->cartOrder($siteId, $orderRecord->number, $lineItemsOnly);
+				if ($order === null) {
+					continue;
+				}
+				$number = $order['number'];
+				// Exclude main site
+				if ($order !== null && $order['siteId'] === Craft::$app->sites->getPrimarySite()->id) {
+					continue;
+				}
+
+				$activeOrders[$number]['order']  = $order;
+				$activeOrders[$number]['site']   = $order['siteId'] ?? 'site missing: ' . $orderRecord->id;
+			}
+
+			// Reverted because cartToJson has setCurrentSite for every cart
+			Craft::$app->sites->setCurrentSite($currentSiteId);
+		}
+
+		return $activeOrders;
+	}
+
+	/**
+	 * @param Address|array $address
+	 */
+	public function setShippingAddress($address)
+	{
+		if (!$address instanceof Address) {
+			$address = new Address($address);
+		}
+
+		$this->shippingAddressId = $address->id;
+		$this->shippingAddress = $address;
+	}
+
+	/**
+	 * @return Address|null
+	 * @since 2.2
+	 */
+	public function getEstimatedShippingAddress()
+	{
+		if (null === $this->_estimatedShippingAddress && $this->estimatedShippingAddressId) {
+			$this->_estimatedShippingAddress = Plugin::getInstance()->getAddresses()->getAddressById($this->estimatedShippingAddressId);
+		}
+
+		return $this->_estimatedShippingAddress;
+	}
+
+	/**
+	 * @param Address|array $address
+	 * @since 2.2
+	 */
+	public function setEstimatedShippingAddress($address)
+	{
+		if (!$address instanceof Address) {
+			$address = new Address($address);
+		}
+		$address->isEstimated = true;
+
+		$this->estimatedShippingAddressId = $address->id;
+		$this->_estimatedShippingAddress = $address;
+	}
+
+	/**
+	 * @param Address|array $address
+	 * @since 2.2
+	 */
+	public function setEstimatedBillingAddress($address)
+	{
+		if (!$address instanceof Address) {
+			$address = new Address($address);
+		}
+		$address->isEstimated = true;
+
+		$this->estimatedBillingAddressId = $address->id;
+		$this->_estimatedBillingAddress = $address;
+	}
+
+	/**
+	 * @return Address|null
+	 */
+	public function getBillingAddress()
+	{
+		if (null === $this->_billingAddress && $this->billingAddressId) {
+			$this->_billingAddress = Plugin::getInstance()->getAddresses()->getAddressById($this->billingAddressId);
+		}
+
+		return $this->_billingAddress;
+	}
+
+	/**
+	 * @param Address|array $address
+	 */
+	public function setBillingAddress($address)
+	{
+		if (!$address instanceof Address) {
+			$address = new Address($address);
+		}
+
+		$this->billingAddressId = $address->id;
+		$this->_billingAddress = $address;
+	}
+
+	/**
+	 * @return Address|null
+	 * @since 2.2
+	 */
+	public function getEstimatedBillingAddress()
+	{
+		if (null === $this->_estimatedBillingAddress && $this->estimatedBillingAddressId) {
+			$this->_estimatedBillingAddress = Plugin::getInstance()->getAddresses()->getAddressById($this->estimatedBillingAddressId);
+		}
+
+		return $this->_estimatedBillingAddress;
+	}
+
+
+	public function saveAddress()
+	{
+		$orderRecord = $this->getRecord();
+		// Make sure addresses are set before recalculation so that on the next page load
+		// the correct adjustments and totals are shown
+		if ($this->shippingSameAsBilling) {
+			$this->setShippingAddress($this->getBillingAddress());
+		}
+
+		if ($this->billingSameAsShipping) {
+			$this->setBillingAddress($this->getShippingAddress());
+		}
+
+		$customer = $this->getCustomer();
+		$existingAddresses = $customer ? $customer->getAddresses() : [];
+
+		$customerUser = $customer->getUser();
+		$currentUser = Craft::$app->getUser()->getIdentity();
+		$noCustomerUserOrCurrentUser = ($customerUser == null && $currentUser == null);
+		$currentUserDoesntMatchCustomerUser = ($currentUser && ($customerUser == null || $currentUser->id != $customerUser->id));
+
+		// Save shipping address, it has already been validated.
+		if ($shippingAddress = $this->getShippingAddress()) {
+			// We need to only save the address to the customers address book while it is a cart and not being edited by another user
+			if ($customer && ($noCustomerUserOrCurrentUser || !$currentUserDoesntMatchCustomerUser) && !$this->isCompleted) {
+				Plugin::getInstance()->getCustomers()->saveAddress($shippingAddress, $customer, false);
+			} else {
+				Plugin::getInstance()->getAddresses()->saveAddress($shippingAddress, false);
+			}
+
+			$orderRecord->shippingAddressId = $shippingAddress->id;
+			$this->setShippingAddress($shippingAddress);
+		}
+
+		// Save billing address, it has already been validated.
+		if ($billingAddress = $this->getBillingAddress()) {
+			// We need to only save the address to the customers address book while it is a cart and not being edited by another user
+			if ($customer && ($noCustomerUserOrCurrentUser || !$currentUserDoesntMatchCustomerUser) && !$this->isCompleted) {
+				Plugin::getInstance()->getCustomers()->saveAddress($billingAddress, $customer, false);
+			} else {
+				Plugin::getInstance()->getAddresses()->saveAddress($billingAddress, false);
+			}
+
+			$orderRecord->billingAddressId = $billingAddress->id;
+			$this->setBillingAddress($billingAddress);
+		}
+
+		if ($estimatedShippingAddress = $this->getEstimatedShippingAddress()) {
+			Plugin::getInstance()->getAddresses()->saveAddress($estimatedShippingAddress, false);
+
+			$orderRecord->estimatedShippingAddressId = $estimatedShippingAddress->id;
+			$this->setEstimatedShippingAddress($estimatedShippingAddress);
+
+			// If estimate billing same as shipping set it here
+			if ($this->estimatedBillingSameAsShipping) {
+				$orderRecord->estimatedBillingAddressId = $estimatedShippingAddress->id;
+				$this->setEstimatedBillingAddress($estimatedShippingAddress);
+			}
+		}
+
+		if (!$this->estimatedBillingSameAsShipping && $estimatedBillingAddress = $this->getEstimatedBillingAddress()) {
+			Plugin::getInstance()->getAddresses()->saveAddress($estimatedBillingAddress, false);
+
+			$orderRecord->estimatedBillingAddressId = $estimatedBillingAddress->id;
+			$this->setEstimatedBillingAddress($estimatedBillingAddress);
+		}
+
+		return $this;
+	}
+
+	public function setEmail()
+	{
+		$customer = Plugin::getInstance()->getCustomers()->getCustomerById($this->customerId);
+		if ($customer && $email = $customer->getEmail()) {
+			$this->email = $email;
+		}
+	}
+
+	public function getEmail()
+	{
+		return $this->email;
+	}
+
+	/**
+	 * @return Customer|null
+	 */
+	public function getCustomer()
+	{
+		if ($this->customerId) {
+			return Plugin::getInstance()->getCustomers()->getCustomerById($this->customerId);
+		}
+
+		return null;
+	}
+
+	/**
+	 * @return User|null
+	 * @throws InvalidConfigException
+	 */
+	public function getUser()
+	{
+		return $this->getCustomer() ? $this->getCustomer()->getUser() : null;
+	}
+
+	public function getCustomerId()
+	{
+		return Plugin::getInstance()->getCustomers()->getCustomerId();
+	}
+
+	public function getOverAllTotalAndQty()
+	{
+		$orders = $this->getChildOrders();
+		$total = 0;
+		$itemTotal = 0;
+		$deliveryTotal = 0;
+		$qty = 0;
+
+		if (count($orders) > 0) {
+			foreach ($orders as $oKey => $order) {
+
+				$siteRecord = \craft\records\Site::findWithTrashed()->where(['id' => $order->siteId])->one();
+				$siteModel = new Site();
+				$siteModel->setAttributes($siteRecord->getAttributes(), false);
+
+				$total+= $order->getTotal();
+				$itemTotal+= $order->getItemSubtotal();
+				$deliveryTotal+= $order->getTotalShippingCost();
+
+				$qty+= $order->getTotalQty();
+			}
+		}
+
+		return [
+			'total' => $total,
+			'subTotal' => $itemTotal,
+			'deliveryTotal' => $deliveryTotal,
+			'qty' => $qty
+		];
+	}
+
+	public function datetimeAttributes(): array
+	{
+		$attributes = parent::datetimeAttributes();
+
+		$attributes[] = 'datePaid';
+		$attributes[] = 'dateOrdered';
+		$attributes[] = 'dateUpdated';
+
+		return $attributes;
+	}
+}

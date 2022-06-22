@@ -1,0 +1,35 @@
+{% extends '_layouts/main' %}
+{% block main %}
+  {% set userExists = null %}
+  {% set userExistsButCantLogin = null %}
+  {% set redirect = '/products' %}
+  {% if cart.email %}
+    {% set userExists = craft.users.email(cart.email).one() %}
+    {% set userExistsButCantLogin = craft.users.email(cart.email).status(['locked','suspended','pending']).one() %}
+  {% endif %}
+
+  <h1 class="tt-title-subpages noborder">ALREADY REGISTERED?</h1>
+  <div class="tt-login-form">
+    <div class="row">
+      <div class="col-xs-12 col-md-6">
+        {% include "_includes/_register" with { redirect: redirect} %}
+      </div>
+      <div class="col-xs-12 col-md-6">
+        <div class="tt-item">
+        {% include "_includes/_sign-in" with { redirect: redirect } %}
+
+        <h2 class="tt-title">Or</h2>
+        {% for provider in craft.depotiseSocial.getLoginProviders() %}
+          <div class="form-group">
+
+            <a href="{{ craft.depotiseSocial.getLoginUrl(provider.handle, { redirect: redirect }) }}" data-provider="{{ provider.handle }}">
+              <img width="320" alt="continue with facebook" src="/images/continue-with-facebook.png" />
+            </a>
+          </div>
+        {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>{{ "Craft Commerce"|t }}</title>
+
+    <meta name="description" content="{{ "The example templates for Craft Commerce"|t }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="application/javascript" src="/jquery.js"></script>
+    <link rel="stylesheet" href="/tailwind.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/dist/app.css">
+
+{#    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">#}
+
+    {% if extraHead is defined %}
+        {{ extraHead }}
+    {% endif %}
+</head>
+<body class="bg-grey-lightest">
+
+
+
+    {% block body %}
+        <div id="{{ craft.request.segment(1) == 'products' ? 'search-app' : 'app' }}" class="bg-white">
+            <div id="main" class="container mx-auto p-6">
+                {% block main %}
+                    <h1>Default Content</h1>
+                    <p>You should not see this.</p>
+                {% endblock %}
+            </div>
+        </div>
+    {% endblock %}
+
+    <footer>
+        <div class="container mx-auto p-6">
+
+        </div>
+    </footer>
+<script type="text/javascript">
+  window.csrfTokenName = "{{ craft.app.config.general.csrfTokenName|e('js') }}";
+  window.csrfTokenValue = "{{ craft.app.request.csrfToken|e('js') }}";
+  let cartAction = '{{ actionUrl('depotise-module/cart/update-cart') }}';
+  let multipleCartAction = '{{ actionUrl('depotise-module/cart/get-multiple-cart') }}';
+  let CartAction = '{{ actionUrl('depotise-module/cart/add-cart') }}';
+</script>
+<script type="text/javascript" src="/dist/app.js"></script>
+
+</body>
+</html>

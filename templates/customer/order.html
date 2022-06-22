@@ -1,0 +1,96 @@
+{% extends '_layouts/main' %}
+
+{% set extraHead %}
+{# We don't want the order info indexed by search engines. #}
+<meta name="robots" content="noindex">
+{% endset %}
+
+{% set number = craft.app.request.getRequiredParam('number') %}
+
+{% set order = craft.orders.siteId('*').number(number).one() %}
+
+{% if not order or order.isCompleted == false %}
+    {% redirect 'customer' %}
+{% endif %}
+
+{% block main %}
+    {% if currentUser %}<p><a href="{{ url('customer') }}">My Orders</a></p>{% endif %}
+    <h1>Order {{ order.reference }}</h1>
+
+
+    <div class="flex -mx-6">
+        <div class="w-1/3 mx-6">
+            <h3>Details</h3>
+
+            <ul class="list-reset">
+                <li><strong>{{ "Customer"|t }}:</strong> {{ order.customer.email }}<br></li>
+                <li><strong>{{ "Total"|t }}:</strong> {{ order.totalPrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}<br></li>
+                <li><strong>{{ "Amount Paid"|t }}:</strong> {{ order.totalPaid|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}<br></li>
+                <li><strong>{{ "Date"|t }}:</strong> {{ order.dateOrdered|date('D jS M Y') }}<br></li>
+                {% if order.pdfUrl %}
+                    <li><strong>Receipt:</strong> <a href="{{ order.getPdfUrl('receipt') }}">Download</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="w-1/3 order-address mx-6">
+            <h3>Delivery Address</h3>
+
+            {% if order.shippingAddress %}
+            {% include '_includes/addresses/address' with { address: order.shippingAddress } %}
+            {% endif %}
+        </div>
+        <div class="w-1/3 order-address mx-6">
+            <h3>Billing Address</h3>
+            {% if order.billingAddress %}
+            {% include '_includes/addresses/address' with { address: order.billingAddress } %}
+            {% endif %}
+        </div>
+    </div>
+
+    <table class="w-full">
+        <thead>
+        <tr>
+            <th>Item</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th class="text-right">Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in order.lineItems %}
+            <tr>
+                <td>
+                    <strong>{{ item.description }}</strong><br>
+                    SKU: {{ item.sku }}
+                </td>
+                <td>
+                    {% if item.onSale %}
+                        <strike>{{ item.price|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</strike>   {{ item.salePrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}
+                    {% else %}
+                        {{ item.price|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}
+                    {% endif %}
+                </td>
+                <td>{{ item.qty }}</td>
+                <td class="text-right">{{ item.subtotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+            </tr>
+        {% endfor %}
+
+        {% for adjustment in order.adjustments %}
+            <tr>
+                <td>{{ adjustment.type }}</td>
+                <td colspan="2"><strong>{{ adjustment.name }}</strong><br>({{ adjustment.description }})</td>
+                <td class="text-right">{{ adjustment.amount|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</td>
+            </tr>
+        {% endfor %}
+
+        <tr>
+            <td colspan="4" class="text-right">
+                Item Total: {{ order.itemTotal|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}<br>
+                <h4>Total: {{ order.totalPrice|commerceCurrency(craft.commerce.paymentCurrencies.primaryPaymentCurrencyIso) }}</h4>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+{% endblock %}

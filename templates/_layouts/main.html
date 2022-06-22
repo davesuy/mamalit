@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ set.siteTitle is not null ?  set.siteTitle : ''  }}</title>
+  <meta name="keywords" content="grocery essentials groceries shopping food delivery">
+  <meta name="description" content="{{ set.body is not null ? set.body|striptags : '' }}">
+  <meta name="author" content="wokiee">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  {% set env = getenv('ENVIRONMENT') %}
+  {% if env == 'production' %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-106322751-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-106322751-2');
+    </script>
+  {% endif %}
+
+
+  <link rel="stylesheet" href="{{ craft.depotiseModule.mix('/dist/app.css') }}">
+</head>
+{% if extraHead is defined %}
+  {{ extraHead }}
+{% endif %}
+
+<body>
+<div id="{{ craft.depotiseModule.app.getVueId() }}">
+  <div id="wrapper" :class="{'mm-open': overlay}">
+  <header id="tt-header">
+    {% set page = craft.app.request.getSegment(1) %}
+    <!-- tt-mobile menu -->
+    <nav
+{#      v-on-clickaway="onMenuAway"#}
+         class="panel-menu mobile-main-menu" ref="navMenu" :class="{'mmitemopen': menuToggle}">
+      <div class="mmpanels">
+        <div class="mmpanel" :class="{'mmopened mmcurrent': menuToggle}" id="mm0">
+        <ul>
+          <li class="mm-close-parent"><a @click.prevent="onMenuToggle" data-target="#close" class="mm-close">Close</a></li>
+          <li>
+            <a href="/">HOME</a>
+          </li>
+          <li class="{% if page == 'products' %}active{% endif %}" href="{{ url('/products') }}">
+            <a href="/products">SHOP</a>
+          </li>
+          <li>
+            <a class="mm-next-level" @click.prevent="onCategoryToggle">CATEGORIES</a>
+          </li>
+          <li>
+            <a href="/bundles">BUNDLES</a>
+          </li>
+          <li class="{% if page == 'how-it-works' %}active{% endif %}">
+            <a href="/how-it-works">HOW IT WORKS</a>
+          </li>
+          <li class="{% if page == 'contact-us' %}active{% endif %}">
+            <a href="/contact-us">CONTACT US</a>
+          </li>
+          <li class="{% if page == 'cart' %}active{% endif %}">
+            <a href="/cart">CART</a>
+          </li>
+        </ul>
+        </div>
+        <div class="mmpanel" :class="{'mmopened mmcurrent': categoryToggle}" id="mm2">
+        <ul id="category-menu" class="tt-megamenu-submenu">
+          <li class="mm-close-parent d-lg-none"><a @click.prevent="onCategoryToggle" data-target="#close" class="mm-close">Close</a></li>
+          <li class="d-lg-none">
+            <a href="/">CATEGORIES</a>
+          </li>
+          {% nav category in craft.categories.group('productCategories').level(1) %}
+            <li>
+              <a href="{{ category.url }}">{{ category.title }}</a>
+              {% ifchildren %}
+                <ul>
+                  {% children %}
+                </ul>
+              {% endifchildren %}
+            </li>
+          {% endnav %}
+        </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- tt-mobile-header -->
+    <div class="tt-mobile-header">
+      <fixed-header :threshold="100">
+      <div id="header-nav" class="container-fluid">
+        <div class="tt-header-row">
+          <div class="tt-mobile-parent-menu">
+            <div class="tt-menu-toggle" id="js-menu-toggle" @click="onMenuToggle">
+              <i class="icon-03"></i>
+            </div>
+          </div>
+          <!-- search -->
+          <div class="tt-mobile-parent-search tt-parent-box">
+            <div class="tt-account tt-dropdown-obj" :class="{'active': categoryToggle}">
+              <button @click="onCategoryToggleIcon" class="tt-dropdown-toggle">
+
+              <i class="icon-h-17"></i>
+              <small class="text-center">Categories</small>
+              </button>
+            </div>
+          </div>
+          <!-- /search -->
+          <!-- cart -->
+          <div class="tt-mobile-parent-cart tt-parent-box">
+
+            <shopping-cart v-if="loadingCart === false" :multiple-cart="carts" :time-count="time"></shopping-cart>
+          </div>
+          <!-- /cart -->
+          <!-- account -->
+          <div class="tt-mobile-parent-account tt-parent-box" id="mobile-account-dropdown">
+
+            <div class="tt-account tt-dropdown-obj" :class="{'active': mobileAccountToggle}">
+              <button @click="mobileAccountToggle = !mobileAccountToggle" class="tt-dropdown-toggle" data-tooltip="My Account" data-tposition="bottom">
+                <i class="icon-f-94"></i>
+
+                <small class="text-center">Account</small>
+              </button>
+              <div class="tt-dropdown-menu account-dropdown">
+                <div class="tt-mobile-add">
+                  <button @click="mobileAccountToggle = !mobileAccountToggle" class="tt-close">Close</button>
+                </div>
+                <div class="tt-dropdown-inner" id="mobile-account-menu">
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- /account -->
+          <!-- currency -->
+          <div class="tt-mobile-parent-multi tt-parent-box"></div>
+          <!-- /currency -->
+        </div>
+      </div>
+      </fixed-header>
+      <div class="container-fluid tt-top-line">
+          <div class="tt-logo-container">
+            <!-- mobile logo -->
+            <a class="tt-logo tt-logo-alignment" href="/"><img src="/images/mamalit-logo.png" alt=""></a>
+            <!-- /mobile logo -->
+          </div>
+      </div>
+    </div>
+    <!-- tt-desktop-header -->
+    <div class="tt-desktop-header">
+      <div class="container">
+        <div class="tt-header-holder">
+          <div class="tt-col-obj tt-obj-logo">
+            <!-- logo -->
+            <a class="tt-logo tt-logo-alignment" href="/"><img src="/images/mamalit-logo.png" alt=""></a>
+            <!-- /logo -->
+          </div>
+          <div class="tt-col-obj tt-obj-menu">
+            <!-- tt-menu -->
+            <div class="tt-desctop-parent-menu tt-parent-box">
+              <div class="tt-desctop-menu">
+                <nav>
+                  <ul>
+                    <li class="dropdown megamenu tt-submenu {% if page == '' %}active{% endif %}">
+                      <a href="/">HOME</a>
+                    </li>
+                    <li class="dropdown megamenu tt-submenu {% if page == 'products' %}active{% endif %}"
+                        href="{{ url('/products') }}">
+                      <a href="/products">SHOP</a>
+                    </li>
+                    <li class="dropdown tt-megamenu-col-01 tt-submenu" @mouseover="desktopCategoryToggle = true" @mouseleave="desktopCategoryToggle = false">
+                      <a>CATEGORIES</a>
+                      <div class="dropdown-menu hover" :class="{'category-desktop': desktopCategoryToggle}">
+                        <div class="row tt-col-list">
+                          <div class="col" id="desktop-category-menu">
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="dropdown megamenu tt-submenu {% if page == 'how-it-works' %}active{% endif %}">
+                      <a href="/how-it-works">HOW IT WORKS</a>
+                    </li>
+                    <li class="dropdown megamenu tt-submenu {% if page == 'bundles' %}active{% endif %}">
+                      <a href="/bundles">BUNDLES</a>
+                    </li>
+                    <li class="dropdown megamenu tt-submenu {% if page == 'contact-us' %}active{% endif %}">
+                      <a href="/contact-us">CONTACT US</a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+            <!-- /tt-menu -->
+          </div>
+          <div class="tt-col-obj tt-obj-options obj-move-right">
+            <!-- tt-cart -->
+            <div class="tt-desctop-parent-cart tt-parent-box" id="shopping-cart">
+                        <shopping-cart v-if="loadingCart === false" :multiple-cart="carts" :time-count="time"></shopping-cart>
+            </div>
+            <!-- /tt-cart -->
+            <!-- tt-account -->
+            <div class="tt-desctop-parent-account tt-parent-box">
+              <div class="tt-account tt-dropdown-obj">
+                <button @click="accountToggle = !accountToggle" class="tt-dropdown-toggle" data-tooltip="My Account" data-tposition="bottom"><i
+                    class="icon-f-94"></i>
+                  <span class="text-center">Account</span>
+                </button>
+                <div class="tt-dropdown-menu account-dropdown" v-show="accountToggle">
+                  <div class="tt-mobile-add">
+                    <button class="tt-close">Close</button>
+                  </div>
+                  <div class="tt-dropdown-inner" id="desktop-account-menu">
+                    <ul>
+                      {% if currentUser %}
+                        <li><a href="{{ url('my-orders') }}"><i class="icon-f-46"></i>{{ "My Orders"|t }}</a></li>
+                        <li><a href="{{ url('customer/addresses') }}"><i class="icon-f-54"></i>{{ "My Addresses"|t }}
+                          </a></li>
+                        <li><a href="{{ logoutUrl }}"><i class="icon-f-76"></i>Logout</a></li>
+                      {% else %}
+                        <li><a href="/login"><i class="icon-f-76"></i>Sign In</a></li>
+                        <li><a href="/login"><i class="icon-f-76"></i>Register</a></li>
+                        <li><a href="/login"><i class="icon-f-94"></i>Guest</a></li>
+                      {% endif %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /tt-account -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div id="tt-pageContent">
+    <div class="container-indent">
+
+
+      {% if cart is not defined %}
+        {#        {% set cart = craft.commerce.carts.cart %}#}
+        {#        {% set cart = craft.depotiseModule.app.carts.cart %}#}
+        {% set cart = craft.depotiseModule.app.carts.siteCart %}
+      {% endif %}
+
+      <div>
+
+        {% set flashNotice = craft.app.session.getFlash('notice') %}
+
+        {% if flashNotice %}
+          <div class="bg-blue text-white">
+            <div class="container mx-auto px-6 py-4">
+              {{ flashNotice }}
+            </div>
+          </div>
+        {% endif %}
+
+        {% set flashError = craft.app.session.getFlash('error') %}
+
+        {% if flashError %}
+          <div class="bg-red text-white">
+            <div class="container mx-auto px-6 py-4">
+              {{ flashError }}
+            </div>
+          </div>
+        {% endif %}
+
+        {#    {% if cart.errors|length %}#}
+        {#        <div class="bg-red text-white">#}
+        {#            <div class="container mx-auto px-6 py-4">#}
+        {#                {% for attribute, errors in cart.errors %}#}
+        {#                    {% if loop.first %}<ul>{% endif %}#}
+        {#                    {% for key, error in errors %}#}
+        {#                        <li>{{ attribute }}: {{ error }}</li>#}
+        {#                    {% endfor %}#}
+        {#                    {% if loop.last %}</ul>{% endif %}#}
+        {#                {% endfor %}#}
+        {#            </div>#}
+        {#        </div>#}
+        {#    {% endif %}#}
+
+        {% block body %}
+          <div class="bg-white">
+            <div id="main" class="container mx-auto p-6">
+              {% if extraHeader is defined %}
+                {{ extraHeader }}
+              {% endif %}
+              {% block main %}
+                <h1>Default Content</h1>
+                <p>You should not see this.</p>
+              {% endblock %}
+            </div>
+          </div>
+        {% endblock %}
+
+      </div>
+    </div>
+  </div>
+  <footer id="tt-footer">
+    <div class="tt-footer-custom">
+      <div class="container">
+        <div class="tt-row">
+          <div class="tt-col-left">
+            <div class="tt-col-item tt-logo-col">
+            </div>
+            <div class="tt-col-item">
+              <!-- copyright -->
+              <div class="tt-box-copyright">
+                &copy; Mamalit {{ date('Y').format('Y') }}. All Rights Reserved - <a target="_blank" href="/privacy-policy">Privacy Policy</a>
+              </div>
+              <!-- /copyright -->
+            </div>
+          </div>
+          <div class="tt-col-right">
+            <div class="tt-col-item">
+              <!-- payment-list -->
+              <ul class="tt-payment-list">
+                <li><a href="page404.html"><span class="icon-visa">
+			                <span class="path1"></span><span class="path2"></span><span class="path3"></span><span
+                        class="path4"></span><span class="path5"></span>
+			                </span></a></li>
+                <li><a href="page404.html"><span class="icon-mastercard">
+			                <span class="path1"></span><span class="path2"></span><span class="path3"></span><span
+                        class="path4"></span><span class="path5"></span><span class="path6"></span><span
+                        class="path7"></span><span class="path8"></span><span class="path9"></span><span
+                        class="path10"></span><span class="path11"></span><span class="path12"></span><span
+                        class="path13"></span>
+			                </span></a></li>
+              </ul>
+              <!-- /payment-list -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- modalVideoProduct -->
+  <div class="modal fade" id="modalVideoProduct" tabindex="-1" role="dialog" aria-label="myModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-video">
+      <div class="modal-content ">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
+              class="icon icon-clear"></span></button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-video-content">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- modal (ModalSubsribeGood) -->
+  <div class="modal  fade" id="ModalSubsribeGood" tabindex="-1" role="dialog" aria-label="myModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-xs">
+      <div class="modal-content ">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
+              class="icon icon-clear"></span></button>
+        </div>
+        <div class="modal-body">
+          <div class="tt-modal-subsribe-good">
+            <i class="icon-f-68"></i> You have successfully signed!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mm-fullscreen-bg" @click="closeOverlay" v-show="overlay"></div>
+  </div>
+</div>
+<script type="text/javascript">
+  window.csrfTokenName = "{{ craft.app.config.general.csrfTokenName|e('js') }}";
+  window.csrfTokenValue = "{{ craft.app.request.csrfToken|e('js') }}";
+  let cartAction = '{{ actionUrl('depotise-module/cart/update-cart') }}';
+  let multipleCartAction = '{{ actionUrl('depotise-module/cart/get-multiple-cart') }}';
+  let multipleCartActionShipping = '{{ actionUrl('depotise-module/cart/get-multiple-cart-shipping') }}';
+  let updateCartAction = '{{ actionUrl('depotise-module/cart/add-cart') }}';
+  let updateAddress = '{{ actionUrl('depotise-module/cart/update-address') }}';
+  let getAddress = '{{ actionUrl('depotise-module/customer/get-address') }}';
+  //let payAction = '{{ actionUrl('depotise-module/cart/make-payment') }}';
+  let payCardAction = '{{ actionUrl('depotise-module/cart/make-card-payment') }}';
+  let paymentAction = '{{ actionUrl('depotise-module/cart/submit-payment') }}';
+  let multipleCartPayment = '{{ actionUrl('depotise-module/cart/get-multiple-cart-payment') }}';
+  let payMongoPayment = '{{ actionUrl('depotise-module/cart/success-pay-mongo-payment') }}';
+  let lineItemCountAction = '{{ actionUrl('depotise-module/cart/line-item-count') }}';
+  let suggestionsAction = '{{ actionUrl('depotise-module/product/get-auto-suggest') }}';
+  let cancelUrl = "{{ '/checkout/payment'|hash }}";
+  let redirectUrl = "{{ '/orders'|hash }}";
+</script>
+{#<script type="text/javascript" src="/dist/app.js"></script>#}
+<script type="text/javascript" src="{{ craft.depotiseModule.mix('/dist/javascript/app.js') }}"></script>
+{% if currentUser and env == 'production' %}
+  <!-- Load Facebook SDK for JavaScript -->
+  <div id="fb-root"></div>
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        xfbml            : true,
+        version          : 'v9.0'
+      });
+    };
+
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+  <!-- Your Chat Plugin code -->
+  <div class="fb-customerchat"
+       attribution=setup_tool
+       page_id="102606568384298">
+  </div>
+
+{% endif  %}
+</body>
+</html>

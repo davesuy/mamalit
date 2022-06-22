@@ -1,0 +1,88 @@
+{% extends '_layouts/main' %}
+{% block main %}
+  {% if craft.app.sites.currentSite.id is not same as(craft.app.sites.primarySite.id) %}
+      {% redirect 'products'  %}
+  {% endif %}
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="tt-collapse-content">
+
+        <div class="form-group mx-auto width-90">
+          <div class="row">
+            <div class="col-9">
+              <auto-suggest v-model="suggest" @selected="searchTitle">></auto-suggest>
+            </div>
+            <div class="col-3">
+              <button :disabled="suggest === null || suggest.trim() === ''" type="submit" @click.prevent="searchTitle"
+                      class="btn px-3">Search
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="tt-block-title mt-5">
+    <h2 class="tt-title">CATEGORIES</h2>
+  </div>
+
+  {% set productCategories = craft.categories().group('productCategories').level(1).all() %}
+  {% if productCategories %}
+    <carousel :per-page-custom="[[319, 1], [479, 2], [767, 3], [1199, 4]]" :per-page="5" :navigation-enabled="true" :mouse-drag="true" ref="carousel">
+    {% for category in productCategories %}
+        <slide class="text-center">
+          <div class="tt-image-box">
+            {% set categoryAsset = category.categoryImage.one() %}
+            <a href="{{ category.url }}">
+            {% if categoryAsset %}
+              <img width="200" height="auto" src="{{ categoryAsset.getUrl()|raw }}"
+                   alt="{{ category.title }}"/>
+            {% else %}
+              <img width="200" height="auto" src="/images/no-variant-image.jpg" alt="{{ category.title }}"/>
+            {% endif %}
+            </a>
+          </div>
+            <div class="tt-title-description">
+              <h4 class="tt-title text-center mt-2"><a href="{{ category.url }}">{{ category.title }}</a></h4>
+            </div>
+
+        </slide>
+    {% endfor %}
+    </carousel>
+  {% endif %}
+
+  <div class="tt-block-title mt-5">
+    <h2 class="tt-title">STORES</h2>
+  </div>
+
+  {% set stores = craft.entries().section('store').orderBy('dateUpdated desc').all() %}
+  {% if stores %}
+    <carousel :per-page-custom="[[319, 1], [479, 2], [767, 3], [1199, 4]]" :per-page="5" :navigation-enabled="true" :mouse-drag="true" ref="carousel">
+      {% for store in stores %}
+        {% set site = craft.app.sites.getSiteByHandle(store.siteHandle) %}
+        {% if site is not null %}
+          <slide class="text-center">
+            <div class="tt-image-box">
+              {% set storeAsset = store.storeImage.one() %}
+              <a href="{{ site.getBaseUrl() }}">
+                {% if storeAsset %}
+                  <img width="200" height="auto" src="{{ storeAsset.getUrl()|raw }}"
+                       alt="{{ storeAsset.title }}"/>
+                {% else %}
+                  <img width="200" height="auto" src="/images/no-variant-image.jpg" alt="{{ store.title }}"/>
+                {% endif %}
+              </a>
+            </div>
+            <div class="tt-title-description">
+              <h4 class="tt-title text-center mt-2"><a href="{{ site.getBaseUrl() }}">{{ store.title }}</a></h4>
+            </div>
+
+          </slide>
+        {% endif %}
+      {% endfor %}
+    </carousel>
+  {% endif %}
+
+{% endblock %}

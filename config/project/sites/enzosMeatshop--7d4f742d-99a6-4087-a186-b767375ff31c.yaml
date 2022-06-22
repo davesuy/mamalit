@@ -1,0 +1,9 @@
+baseUrl: '@web/enzo-meat-shop'
+enabled: true
+handle: enzosMeatshop
+hasUrls: true
+language: en-PH
+name: 'Enzo''s Meatshop'
+primary: false
+siteGroup: 24b75201-290a-4426-a670-88ee49d5d4c1
+sortOrder: 6

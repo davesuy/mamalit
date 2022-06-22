@@ -1,0 +1,60 @@
+{% extends '_layouts/main' %}
+
+{% block main %}
+
+    {% set addressId = craft.app.request.param('addressId') %}
+    {% set redirect = craft.app.request.param('redirect') %}
+
+    {% if not address is defined and addressId %}
+        {% set address = craft.commerce.customers.customer.getAddressById(addressId) %}
+    {% endif %}
+
+    <h1>
+        {% if addressId %}
+            Edit Address
+        {% else %}
+            Add a new address
+        {% endif %}
+    </h1>
+    <address-form :redirect="'{{ redirect ? '/' ~ redirect : '' }}'" :action="'{{ actionUrl('commerce/customer-addresses/save') }}'" :address-id="{{ addressId ? addressId : '0' }}"></address-form>
+{#    <form @submit="submitAddress" method="post" ref="addressForm">#}
+{#        {{ csrfInput() }}#}
+{#        <input type="hidden" name="action" value="commerce/customer-addresses/save">#}
+{#        {% if redirect %}#}
+{#            {{ redirectInput(redirect) }}#}
+{#        {% else %}#}
+{#            {{ redirectInput('customer/addresses') }}#}
+{#        {% endif %}#}
+
+{#        {% if addressId %}#}
+{#            <input type="hidden" name="address[id]" value="{{ addressId }}">#}
+{#        {% endif %}#}
+
+{#        {% include '_includes/addresses/form' %}#}
+{#        {% set isPrimaryBilling = cart.customer.primaryBillingAddressId == addressId %}#}
+{#        {% set isPrimaryShipping = cart.customer.primaryShippingAddressId == addressId %}#}
+
+{#        <hr />#}
+
+{#        <p>#}
+{#            <label for="makePrimaryShippingAddress"><input id="makePrimaryShippingAddress" name="makePrimaryShippingAddress" type="checkbox" {{ isPrimaryShipping ? 'checked' :'' }}/><span class="label-body">Make this the primary shipping address</span></label>#}
+{#        </p>#}
+
+{#        <p>#}
+{#            <label for="makePrimaryBillingAddress"><input id="makePrimaryBillingAddress" name="makePrimaryBillingAddress" type="checkbox" {{ isPrimaryBilling ? 'checked' :'' }}/><span class="label-body">Make this the primary billing address</span></label>#}
+{#        </p>#}
+
+{#        <div class="mt-6">#}
+{#            <input type="submit" value="Save Address">#}
+{#        </div>#}
+{#    </form>#}
+
+    <div class="mt-6 text-right">
+        {% if redirect %}
+            <h3><a href="/{{ redirect }}">Cancel</a></h3>
+        {% else %}
+          <h3><a href="{{ url('customer/addresses') }}">Cancel</a></h3>
+        {% endif %}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+enableVersioning: true
+handle: suggest
+name: Suggest
+previewTargets:
+  -
+    __assoc__:
+      -
+        - label
+        - 'Primary entry page'
+      -
+        - urlFormat
+        - '{url}'
+      -
+        - refresh
+        - '1'
+propagationMethod: none
+siteSettings:
+  2660bd5c-1f43-4885-8337-ab29818b7dd5:
+    enabledByDefault: true
+    hasUrls: false
+    template: null
+    uriFormat: null
+  36c91ae9-5910-4c1a-9a8f-5d954b1ab6f9:
+    enabledByDefault: true
+    hasUrls: true
+    template: suggest
+    uriFormat: 'suggest/{slug}'
+  62a401cd-ff6e-4f67-8095-54df23406a9c:
+    enabledByDefault: true
+    hasUrls: true
+    template: suggest
+    uriFormat: 'suggest/{slug}'
+  7d4f742d-99a6-4087-a186-b767375ff31c:
+    enabledByDefault: true
+    hasUrls: false
+    template: null
+    uriFormat: null
+  97afb406-be52-4152-8b2e-3322f7197477:
+    enabledByDefault: true
+    hasUrls: true
+    template: suggest
+    uriFormat: 'suggest/{slug}'
+  cb9c61ec-ed8a-416e-aaab-80285bab6886:
+    enabledByDefault: true
+    hasUrls: false
+    template: null
+    uriFormat: null
+  e293e18c-9b24-4098-a340-b136cfb50199:
+    enabledByDefault: true
+    hasUrls: false
+    template: null
+    uriFormat: null
+type: channel

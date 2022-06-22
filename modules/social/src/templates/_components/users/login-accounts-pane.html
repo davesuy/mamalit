@@ -1,0 +1,76 @@
+{% if user.id == currentUser.id or currentUser.admin %}
+    <div class="meta social-login-accounts-pane">
+        <div class="data">
+            <h2>{{ "Login Accounts" }}</h2>
+
+            {% if user.id == currentUser.id %}
+                <p>{{ 'Manage your login accounts.' }}</p>
+            {% else %}
+                <p>{{ 'Manage login accounts for this user.' }}</p>
+            {% endif %}
+
+            <div id="nologinaccounts"{% if loginAccounts|length > 0 or loginProviders|length > 0 %} class="hidden"{% endif %}>
+                <p class="light">{{ "No login accounts." }}</p>
+            </div>
+
+            <table id="loginAccounts" class="fullwidth">
+                {% for loginProvider in loginProviders %}
+                    {% set connected = false %}
+                    {% set loginAccountId = null %}
+                    {% for account in loginAccounts %}
+                        {% if account.getLoginProvider() and loginProvider.handle == account.getLoginProvider().handle %}
+                            {% set connected = true %}
+                            {% set loginAccountId = account.id %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% spaceless %}
+                    <tr
+                        {% if connected %}
+                            {% if loginAccountId %}
+                                data-id="{{ loginAccountId }}"
+                            {% endif %}
+
+                            data-provider="{{ loginProvider.handle }}"
+                            data-connect-enabled="{{ user.id == currentUser.id ? true : false }}"
+                            data-name="{{ loginProvider.name }}"
+                        {% endif %}
+                        >
+                    {% endspaceless %}
+                        <td class="provider">
+                            <div class="thumb">
+                                <img width="20" src="{{ loginProvider.getIconUrl() }}" class="social-icon social-{{ loginProvider.handle }}" />
+                            </div>
+
+                            <div class="label">{{ loginProvider.name }}</div>
+                        </td>
+                        <td class="thin">
+                            {% if connected %}
+                                {% if user.id == currentUser.id %}
+                                    <a class="btn small delete disconnect" title="{{ 'Disconnect' }}">{{ 'Disconnect' }}</a>
+                                {% elseif currentUser.admin %}
+                                    <a class="btn small delete" title="{{ 'Disconnect' }}">{{ 'Disconnect' }}</a>
+                                {% else %}
+                                    <div class="btn small disabled">{{ 'Connected' }}</div>
+                                {% endif %}
+                            {% else %}
+                                {% if user.id == currentUser.id %}
+                                    <a class="btn small submit" href="{{ craft.depotiseSocial.loginUrl(loginProvider.handle) }}">{{ 'Connect' }}</a>
+                                {% else %}
+                                    <div class="btn small submit disabled">{{ 'Connect' }}</div>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endif %}
+
+{% js %}
+var loginAccountsPane = new Social.LoginAccountsPane({
+    tableSelector: '#loginAccounts',
+    noObjectsSelector: '#nologinaccounts',
+});
+{% endjs %}
